@@ -20,10 +20,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .ts,.tsx ./src",
-    "fix": "yarn format && yarn lint:fix",
-    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
-    "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'"
+    "format": "eslint --ext .js,.ts,.jsx,.tsx --ignore-path .gitignore . && prettier \"**/*.{js,jsx,ts,tsx}\" --write",
+    "prepare": "husky install .husky",
+    "lint-client": "lint-staged"
   },
   "eslintConfig": {
     "extends": [
@@ -53,7 +52,14 @@
     "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-promise": "^6.0.1",
     "eslint-plugin-react": "^7.31.8",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "typescript": "^4.8.4"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json}": [
+      "npm run format"
+    ]
   }
 }
