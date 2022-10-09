@@ -63,9 +63,8 @@ const App: React.FC = () => {
       >
         <Layer>
           <Text text="Just start drawing" x={5} y={30} />
-          {lines.map((line, i) => (
+          {lines.map((line) => (
             <Line
-              key={i}
               points={line.points}
               stroke="#df4b26"
               strokeWidth={5}
