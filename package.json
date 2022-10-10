@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.0.6",
     "konva": "^8.3.13",
     "react": "^18.2.0",
+    "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-konva": "^18.2.2",
     "react-scripts": "5.0.1",
@@ -45,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-color": "^3.0.6",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.25.0",
