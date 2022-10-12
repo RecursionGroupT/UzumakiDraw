@@ -1,10 +1,10 @@
 import Konva from "konva";
 import React, { useState, useRef, useContext } from "react";
-import { Layer, Stage, Text, Line } from "react-konva";
-import { KonvaContext, PenType } from "../context/KonvaContext";
+import { Layer, Stage, Line } from "react-konva";
+import { KonvaContext, IPenType } from "../context/KonvaContext";
 
 interface ILine {
-  penType: PenType;
+  penType: IPenType;
   points: number[];
   // color
   // width
@@ -14,7 +14,7 @@ interface ILine {
 type Lines = ILine[] | [];
 
 const KonvaCanvas = () => {
-  const { penType, penColor } = useContext(KonvaContext);
+  const { penType, penColor, isPenDash } = useContext(KonvaContext);
 
   const [lines, setLines] = useState<Lines>([]);
   const isDrawing = useRef<boolean>(false);
@@ -25,7 +25,8 @@ const KonvaCanvas = () => {
     if (stage != null) {
       const pos = stage.getPointerPosition();
       if (pos != null) {
-        setLines((prevLines) => [...prevLines, { penType, points: [pos.x, pos.y] }]);
+        const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
+        setLines((prevLines) => [...prevLines, { penType: currPenType, points: [pos.x, pos.y] }]);
       }
     }
   };
@@ -63,17 +64,18 @@ const KonvaCanvas = () => {
       onMouseup={handleMouseUp}
     >
       <Layer>
-        <Text text="Just start drawing" x={5} y={30} />
         {lines.map((line) => (
           <Line
             points={line.points}
             stroke={penColor}
-            strokeWidth={3}
-            tension={15}
-            dash={[30, 20]}
-            lineCap="round"
-            lineJoin="round"
-            globalCompositeOperation={line.penType === "eraser" ? "destination-out" : "source-over"}
+            strokeWidth={10}
+            shadowBlur={line.penType.shadowBlur}
+            tension={0.4}
+            dash={[10, 20]}
+            dashEnabled={line.penType.dashEnabled}
+            lineCap={line.penType.lineCap}
+            lineJoin={line.penType.lineJoin}
+            globalCompositeOperation={line.penType.globalCompositeOperation}
           />
         ))}
       </Layer>
