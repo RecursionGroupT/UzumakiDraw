@@ -6,15 +6,14 @@ import { KonvaContext, IPenType } from "../context/KonvaContext";
 interface ILine {
   penType: IPenType;
   points: number[];
-  // color
-  // width
-  // strokeStyle
+  color: string;
+  width: number;
 }
 
 type Lines = ILine[] | [];
 
 const KonvaCanvas = () => {
-  const { penType, penColor, isPenDash } = useContext(KonvaContext);
+  const { penType, penColor, penWidth, isPenDash } = useContext(KonvaContext);
 
   const [lines, setLines] = useState<Lines>([]);
   const isDrawing = useRef<boolean>(false);
@@ -26,7 +25,10 @@ const KonvaCanvas = () => {
       const pos = stage.getPointerPosition();
       if (pos != null) {
         const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
-        setLines((prevLines) => [...prevLines, { penType: currPenType, points: [pos.x, pos.y] }]);
+        setLines((prevLines) => [
+          ...prevLines,
+          { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth },
+        ]);
       }
     }
   };
@@ -67,8 +69,8 @@ const KonvaCanvas = () => {
         {lines.map((line) => (
           <Line
             points={line.points}
-            stroke={penColor}
-            strokeWidth={10}
+            stroke={line.color}
+            strokeWidth={line.width}
             shadowBlur={line.penType.shadowBlur}
             tension={0.4}
             dash={[10, 20]}

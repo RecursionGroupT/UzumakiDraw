@@ -31,7 +31,6 @@ export const KonvaContext: React.Context<IKonvaContext> = createContext({} as IK
 
 export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [penColor, setPenColor] = useState<string>("black");
-  const [penWidth, setPenWidth] = useState<number>(10);
   const [penType, setPenType] = useState<IPenType>({
     name: "pencil",
     lineCap: "butt",
@@ -41,6 +40,7 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
     dashEnabled: false,
   });
   const [isPenDash, setIsPenDash] = useState<boolean>(false);
+  const [penWidth, setPenWidth] = useState<number>(1);
 
   const value = useMemo(
     () => ({
