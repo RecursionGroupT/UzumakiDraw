@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { KonvaContext, PenType } from "../../context/KonvaContext";
+import PenWidthPicker from "./PenWidthPicker";
 
 const ToolBox = () => {
   const { penType, setPenType, penColor, setPenColor } = useContext(KonvaContext);
@@ -24,6 +25,7 @@ const ToolBox = () => {
         <option value="black">Black</option>
         <option value="red">Red</option>
       </select>
+      <PenWidthPicker />
     </>
   );
 };

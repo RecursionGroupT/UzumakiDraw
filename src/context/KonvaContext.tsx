@@ -19,7 +19,7 @@ export const KonvaContext: React.Context<IKonvaContext> = createContext({} as IK
 
 export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [penColor, setPenColor] = useState<string>("black");
-  const [penWidth, setPenWidth] = useState<number>(10);
+  const [penWidth, setPenWidth] = useState<number>(1);
   const [penType, setPenType] = useState<PenType>("pen");
 
   const value = useMemo(
