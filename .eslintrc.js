@@ -22,7 +22,7 @@ module.exports = {
     project: ["./tsconfig.json"],
   },
   plugins: ["react", "@typescript-eslint"],
-  ignorePatterns: [".eslintrc.js"],
+  ignorePatterns: [".eslintrc.js", "postcss.config.js", "tailwind.config.js"],
   rules: {
     "no-use-before-define": "off",
     "@typescript-eslint/no-unused-vars": "error",
