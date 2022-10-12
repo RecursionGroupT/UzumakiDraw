@@ -3,7 +3,7 @@ import { KonvaContext, PenType } from "../../context/KonvaContext";
 import PenColorPicker from "./PenColorPicker";
 
 const ToolBox = () => {
-  const { penType, setPenType, penColor, setPenColor } = useContext(KonvaContext);
+  const { penType, setPenType } = useContext(KonvaContext);
 
   return (
     <>

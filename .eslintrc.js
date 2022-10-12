@@ -25,6 +25,7 @@ module.exports = {
   ignorePatterns: [".eslintrc.js"],
   rules: {
     "no-use-before-define": "off",
+    "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-use-before-define": "off",
     "import/prefer-default-export": "off",
     "import/extensions": [
