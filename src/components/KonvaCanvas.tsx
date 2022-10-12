@@ -6,9 +6,8 @@ import { KonvaContext, PenType } from "../context/KonvaContext";
 interface ILine {
   penType: PenType;
   points: number[];
-  // color
+  color: string;
   width: number;
-  // strokeStyle
 }
 
 type Lines = ILine[] | [];
@@ -25,7 +24,7 @@ const KonvaCanvas = () => {
     if (stage != null) {
       const pos = stage.getPointerPosition();
       if (pos != null) {
-        setLines((prevLines) => [...prevLines, { penType, points: [pos.x, pos.y], width: penWidth }]);
+        setLines((prevLines) => [...prevLines, { penType, points: [pos.x, pos.y], color: penColor, width: penWidth }]);
       }
     }
   };
@@ -67,10 +66,8 @@ const KonvaCanvas = () => {
         {lines.map((line) => (
           <Line
             points={line.points}
-            stroke={penColor}
+            stroke={line.color}
             strokeWidth={line.width}
-            // tension={1}
-            // dash={[30, 20]}
             lineCap="round"
             lineJoin="round"
             globalCompositeOperation={line.penType === "eraser" ? "destination-out" : "source-over"}
