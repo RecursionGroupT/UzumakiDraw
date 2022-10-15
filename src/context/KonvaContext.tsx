@@ -1,14 +1,26 @@
+import { LineCap, LineJoin } from "konva/lib/Shape";
 import { createContext, useState, useMemo } from "react";
 
-export type PenType = "pen" | "eraser" | "pencil";
+export type PenNames = "pencil" | "eraser" | "felt-tip" | "brush";
+
+export interface IPenType {
+  name: PenNames;
+  lineCap: LineCap;
+  lineJoin: LineJoin;
+  shadowBlur: number;
+  globalCompositeOperation: GlobalCompositeOperation;
+  dashEnabled: boolean;
+}
 
 interface IKonvaContext {
   penColor: string; // "black", "white"
   setPenColor: React.Dispatch<React.SetStateAction<string>>;
   penWidth: number;
   setPenWidth: React.Dispatch<React.SetStateAction<number>>;
-  penType: PenType;
-  setPenType: React.Dispatch<React.SetStateAction<PenType>>;
+  penType: IPenType;
+  setPenType: React.Dispatch<React.SetStateAction<IPenType>>;
+  isPenDash: boolean;
+  setIsPenDash: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type Props = {
@@ -19,8 +31,16 @@ export const KonvaContext: React.Context<IKonvaContext> = createContext({} as IK
 
 export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [penColor, setPenColor] = useState<string>("black");
+  const [penType, setPenType] = useState<IPenType>({
+    name: "pencil",
+    lineCap: "butt",
+    lineJoin: "miter",
+    shadowBlur: 0,
+    globalCompositeOperation: "source-over",
+    dashEnabled: false,
+  });
+  const [isPenDash, setIsPenDash] = useState<boolean>(false);
   const [penWidth, setPenWidth] = useState<number>(1);
-  const [penType, setPenType] = useState<PenType>("pen");
 
   const value = useMemo(
     () => ({
@@ -30,8 +50,10 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
       setPenWidth,
       penType,
       setPenType,
+      isPenDash,
+      setIsPenDash,
     }),
-    [penColor, penWidth, penType]
+    [penColor, penWidth, penType, isPenDash]
   );
 
   return <KonvaContext.Provider value={value}>{children}</KonvaContext.Provider>;
