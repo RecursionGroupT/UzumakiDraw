@@ -10,6 +10,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier",
+    "plugin:tailwindcss/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -21,7 +22,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ["./tsconfig.json"],
   },
-  plugins: ["react", "@typescript-eslint"],
+  plugins: ["react", "@typescript-eslint", "tailwindcss"],
   ignorePatterns: [".eslintrc.js", "postcss.config.js", "tailwind.config.js"],
   rules: {
     "no-use-before-define": "off",
