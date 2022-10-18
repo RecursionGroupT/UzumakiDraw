@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useTimer } from "react-timer-hook";
 import { KonvaContext } from "../../context/KonvaContext";
 
-const MyTimer = () => {
+const Timer = () => {
   const { isTimerExpired, setIsTimerExpired } = useContext(KonvaContext);
 
   const time = new Date();
@@ -24,4 +24,4 @@ const MyTimer = () => {
   );
 };
 
-export default MyTimer;
+export default Timer;
