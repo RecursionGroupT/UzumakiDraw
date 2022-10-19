@@ -21,6 +21,8 @@ interface IKonvaContext {
   setPenType: React.Dispatch<React.SetStateAction<IPenType>>;
   isPenDash: boolean;
   setIsPenDash: React.Dispatch<React.SetStateAction<boolean>>;
+  isTimerExpired: boolean;
+  setIsTimerExpired: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type Props = {
@@ -41,6 +43,7 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   });
   const [isPenDash, setIsPenDash] = useState<boolean>(false);
   const [penWidth, setPenWidth] = useState<number>(1);
+  const [isTimerExpired, setIsTimerExpired] = useState<boolean>(false);
 
   const value = useMemo(
     () => ({
@@ -52,8 +55,10 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
       setPenType,
       isPenDash,
       setIsPenDash,
+      isTimerExpired,
+      setIsTimerExpired,
     }),
-    [penColor, penWidth, penType, isPenDash]
+    [penColor, penWidth, penType, isPenDash, isTimerExpired]
   );
 
   return <KonvaContext.Provider value={value}>{children}</KonvaContext.Provider>;
