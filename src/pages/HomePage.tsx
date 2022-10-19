@@ -18,7 +18,7 @@ const HomePage = () => {
     <div>
       HomePage
       <div>
-        <button className="bg-blue-800 hover:bg-blue-600 text-white rounded px-4 py-2" type="button">
+        <button className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600" type="button">
           <Link to="/game">to game</Link>
         </button>
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
