@@ -48,7 +48,7 @@ const DrawPage = () => {
       <div className="absolute top-0 right-0">
         <Timer timerKey={timerKey} />
       </div>
-      <div className="flex h-full space-x-8 p-4 ">
+      <div className="flex h-full space-x-8 p-4">
         <div className="grid basis-1/6 content-center">
           <ToolBox />
         </div>
