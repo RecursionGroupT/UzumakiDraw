@@ -2,30 +2,35 @@ import React, { useContext } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { KonvaContext } from "../../context/KonvaContext";
 
-const MyTimer = () => {
+type Props = {
+  timerKey: number;
+};
+
+const Timer: React.FC<Props> = ({ timerKey }) => {
   const { isTimerExpired, setIsTimerExpired } = useContext(KonvaContext);
 
   const renderTime = ({ remainingTime }: { remainingTime: number }) => {
     if (remainingTime === 0) {
       setIsTimerExpired(true);
-      return <div className="timer">{isTimerExpired && <span>タイムアウト</span>}</div>;
+      return <div>{isTimerExpired && <span>タイムアウト</span>}</div>;
     }
 
     return (
-      <div className="timer">
-        <div className="text">Remaining</div>
-        <div className="value">{remainingTime}</div>
-        <div className="text">seconds</div>
+      <div>
+        <div>Remaining</div>
+        <div>{remainingTime}</div>
+        <div>seconds</div>
       </div>
     );
   };
 
   return (
     <div className="App">
-      <div className="timer-wrapper">
+      <div>
         <CountdownCircleTimer
+          key={timerKey}
           isPlaying
-          duration={5}
+          duration={30}
           colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
           colorsTime={[10, 6, 3, 0]}
           onComplete={() => ({ shouldRepeat: false })}
@@ -37,4 +42,4 @@ const MyTimer = () => {
   );
 };
 
-export default MyTimer;
+export default Timer;
