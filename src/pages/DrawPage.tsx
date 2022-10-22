@@ -44,15 +44,24 @@ const DrawPage = () => {
   }, [isTimerExpired, setIsTimerExpired, handleNext]);
 
   return (
-    <>
-      <SubjectDisplay subject={subject} />
-      <Timer timerKey={timerKey} />
-      <ToolBox />
-      <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
+    <div className="relative m-8 flex h-5/6 min-w-[1100px] flex-col space-y-4 rounded-md border-2 border-double border-orange-300 p-2">
+      <div className="absolute top-0 right-0">
+        <Timer timerKey={timerKey} />
+      </div>
+      <div className="flex h-full space-x-8 p-4">
+        <div className="grid basis-1/6 content-center">
+          <ToolBox />
+        </div>
+        <div className="mt-8 basis-4/6">
+          <SubjectDisplay subject={subject} />
+          <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
+        </div>
+        <div className="basis-1/6" />
+      </div>
       <button className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600" type="button" onClick={handleNext}>
         NEXT
       </button>
-    </>
+    </div>
   );
 };
 

@@ -12,13 +12,13 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       {authState.authIsReady && (
-        <>
+        <div className="h-screen bg-orange-200">
           <Header />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/game" element={<DrawPage />} />
           </Routes>
-        </>
+        </div>
       )}
     </BrowserRouter>
   );

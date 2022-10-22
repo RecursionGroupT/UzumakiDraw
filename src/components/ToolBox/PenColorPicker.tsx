@@ -19,23 +19,19 @@ const PenColorPicker = () => {
   };
 
   return (
-    <>
-      <div>
-        <div>
-          <button type="button" onClick={handleOpen}>
-            <div>カラーを選択する</div>
-          </button>
-        </div>
-      </div>
+    <div className="bg-blue-300">
+      <button type="button" onClick={handleOpen}>
+        カラーを選択する
+      </button>
       {isOpen && (
-        <div>
-          <button type="button" onClick={handleClose}>
-            <div>閉じる</div>
-          </button>
+        <div className="absolute">
           <SketchPicker color={penColor} onChange={handleChange} />
+          <button type="button" onClick={handleClose}>
+            閉じる
+          </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
