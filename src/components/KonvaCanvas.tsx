@@ -1,5 +1,5 @@
 import Konva from "konva";
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { Layer, Stage, Line } from "react-konva";
 import { KonvaContext, IPenType } from "../context/KonvaContext";
 
@@ -14,6 +14,8 @@ type Lines = ILine[] | [];
 
 const KonvaCanvas = () => {
   const { penType, penColor, penWidth, isPenDash } = useContext(KonvaContext);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
 
   const [lines, setLines] = useState<Lines>([]);
   const isDrawing = useRef<boolean>(false);
@@ -57,10 +59,27 @@ const KonvaCanvas = () => {
     isDrawing.current = false;
   };
 
+  const handleResize = () => {
+    setWidth(window.innerWidth * 0.75);
+    setHeight(window.innerHeight * 0.5);
+  };
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", () => {
+      handleResize();
+    });
+    return () => {
+      window.removeEventListener("resize", () => {
+        handleResize();
+      });
+    };
+  }, []);
+
   return (
     <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
+      className="rounded-b-md border-4 border-black bg-white"
+      width={width}
+      height={height}
       onMouseDown={handleMouseDown}
       onMousemove={handleMouseMove}
       onMouseup={handleMouseUp}

@@ -15,11 +15,9 @@ const Timer = () => {
   });
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <div style={{ fontSize: "100px" }}>
-        <span>{minutes}</span>:<span>{seconds}</span>
-        {isTimerExpired && <div>タイムアウト</div>}
-      </div>
+    <div className="">
+      <span>{minutes}</span>:<span>{seconds}</span>
+      {isTimerExpired && <div>タイムアウト</div>}
     </div>
   );
 };

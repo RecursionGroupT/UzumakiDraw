@@ -22,11 +22,13 @@ const SubjectDisplay = () => {
   };
 
   return (
-    <div>
-      <div>{subject}</div>
-      <button type="button" onClick={handleClick}>
-        完了
-      </button>
+    <div className=" rounded-t-md border-4 border-black bg-gray-900 p-6 text-center text-xl font-bold text-white">
+      <div>
+        {subject}
+        <button type="button" onClick={handleClick}>
+          完了
+        </button>
+      </div>
     </div>
   );
 };
