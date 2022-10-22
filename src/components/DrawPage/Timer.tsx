@@ -1,18 +1,13 @@
 import React, { useContext } from "react";
-import { useTimer } from "react-timer-hook";
 import { KonvaContext } from "../../context/KonvaContext";
 
-const Timer = () => {
-  const { isTimerExpired, setIsTimerExpired } = useContext(KonvaContext);
+type Props = {
+  minutes: number;
+  seconds: number;
+};
 
-  const time = new Date();
-  time.setSeconds(time.getSeconds() + 3); // set time
-  const expiryTimestamp: Date = time;
-
-  const { seconds, minutes } = useTimer({
-    expiryTimestamp,
-    onExpire: () => setIsTimerExpired(true),
-  });
+const Timer: React.FC<Props> = ({ minutes, seconds }) => {
+  const { isTimerExpired } = useContext(KonvaContext);
 
   return (
     <div style={{ textAlign: "center" }}>

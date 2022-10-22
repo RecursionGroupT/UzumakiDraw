@@ -1,21 +1,15 @@
 import Konva from "konva";
-import React, { useState, useRef, useContext } from "react";
+import React, { useRef, useContext } from "react";
 import { Layer, Stage, Line } from "react-konva";
-import { KonvaContext, IPenType } from "../context/KonvaContext";
+import { KonvaContext, IPenType, Drawing } from "../context/KonvaContext";
 
-interface ILine {
-  penType: IPenType;
-  points: number[];
-  color: string;
-  width: number;
-}
+type Props = {
+  drawing: Drawing;
+  setDrawing: React.Dispatch<React.SetStateAction<Drawing>>;
+};
 
-type Lines = ILine[] | [];
-
-const KonvaCanvas = () => {
+const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
   const { penType, penColor, penWidth, isPenDash } = useContext(KonvaContext);
-
-  const [lines, setLines] = useState<Lines>([]);
   const isDrawing = useRef<boolean>(false);
 
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>): void => {
@@ -25,8 +19,8 @@ const KonvaCanvas = () => {
       const pos = stage.getPointerPosition();
       if (pos != null) {
         const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
-        setLines((prevLines) => [
-          ...prevLines,
+        setDrawing((prevDrawing) => [
+          ...prevDrawing,
           { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth },
         ]);
       }
@@ -41,14 +35,14 @@ const KonvaCanvas = () => {
     const stage = e.target.getStage();
     if (stage != null) {
       const point = stage.getPointerPosition();
-      const lastLine = lines[lines.length - 1];
+      const lastLine = drawing[drawing.length - 1];
       // add point
       if (point != null) {
         lastLine.points = lastLine.points.concat([point.x, point.y]);
 
         // replace last
-        lines.splice(lines.length - 1, 1, lastLine);
-        setLines(lines.concat());
+        drawing.splice(drawing.length - 1, 1, lastLine);
+        setDrawing(drawing.concat());
       }
     }
   };
@@ -59,14 +53,14 @@ const KonvaCanvas = () => {
 
   return (
     <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
+      width={window.innerWidth - 500}
+      height={window.innerHeight - 500}
       onMouseDown={handleMouseDown}
       onMousemove={handleMouseMove}
       onMouseup={handleMouseUp}
     >
       <Layer>
-        {lines.map((line) => (
+        {drawing.map((line) => (
           <Line
             points={line.points}
             stroke={line.color}
