@@ -1,5 +1,8 @@
 import React, { useContext } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import useSound from "use-sound";
+import SoundWarn from "../../sounds/playWarn.mp3";
+import SoundNext from "../../sounds/playNext.mp3";
 import { KonvaContext } from "../../context/KonvaContext";
 
 type Props = {
@@ -8,10 +11,17 @@ type Props = {
 
 const Timer: React.FC<Props> = ({ timerKey }) => {
   const { isTimerExpired, setIsTimerExpired } = useContext(KonvaContext);
+  const [playWarn] = useSound(SoundWarn as string);
+  const [playNext] = useSound(SoundNext as string);
 
   const renderTime = ({ remainingTime }: { remainingTime: number }) => {
+    if (remainingTime === 10) {
+      playWarn({ playbackRate: 5 });
+    }
+
     if (remainingTime === 0) {
       setIsTimerExpired(true);
+      playNext();
       return <div>{isTimerExpired && <span>タイムアウト</span>}</div>;
     }
 
