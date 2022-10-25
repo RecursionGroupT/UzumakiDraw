@@ -21,10 +21,10 @@ const LandingPage = () => {
           <p className="text-5xl font-bold">
             ゲーム感覚で自分の<span className="bg-blue-300 p-2">偏愛マップ</span>を作ろう！
           </p>
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <button
             className="m-4 rounded-xl bg-gray-900 py-6 px-10 text-xl font-semibold tracking-wider text-white "
             type="button"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={googleLogin}
           >
             GOOGLEでサインイン

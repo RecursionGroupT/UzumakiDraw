@@ -42,10 +42,10 @@ const HomePage = () => {
               <button type="button">start game</button>
             </div>
           </Link>
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <button
             className="w-full rounded-lg p-4 text-red-600 transition duration-300 hover:bg-gray-100"
             type="button"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={logout}
           >
             Logout
