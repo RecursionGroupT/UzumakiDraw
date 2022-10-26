@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
+import useSound from "use-sound";
+import SoundNext from "../sounds/playNext.mp3";
 import ToolBox from "../components/ToolBox/ToolBox";
 import KonvaCanvas from "../components/KonvaCanvas";
 import SubjectDisplay from "../components/DrawPage/SubjectDisplay";
@@ -13,6 +15,7 @@ const DrawPage = () => {
   const [subject, setSubject] = useState<string>(subjects[0]);
   const [subjectArray, setSubjectArray] = useState<string[]>(subjects);
   const [timerKey, setTimerKey] = useState(0);
+  const [playNext] = useSound<string>(SoundNext as string);
 
   const { setDrawings, isTimerExpired, setIsTimerExpired } = useContext(KonvaContext);
 
@@ -31,11 +34,12 @@ const DrawPage = () => {
   }, [subject, subjectArray]);
 
   const handleNext = useCallback(() => {
+    playNext();
     subjectChange(); // change subject title
     setTimerKey((prevTimerKey) => prevTimerKey + 1); // reload timer
     setDrawings((prevDrawings) => [...prevDrawings, drawing]); // save current canvas
     setDrawing([]); // clear current canvas
-  }, [drawing, setDrawings, subjectChange]);
+  }, [drawing, setDrawings, subjectChange, playNext]);
 
   useEffect(() => {
     if (isTimerExpired) {
