@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import ToolBox from "../components/ToolBox/ToolBox";
 import KonvaCanvas from "../components/KonvaCanvas";
 import SubjectDisplay from "../components/DrawPage/SubjectDisplay";
@@ -61,6 +62,15 @@ const DrawPage = () => {
       <button className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600" type="button" onClick={handleNext}>
         NEXT
       </button>
+      <Link to="/result">
+        <button
+          className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600"
+          type="button"
+          onClick={handleNext}
+        >
+          RESULT
+        </button>
+      </Link>
     </div>
   );
 };
