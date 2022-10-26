@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import LandingPage from "./pages/LandingPage";
 import { AuthContext } from "./context/AuthContext";
+import ResultPage from "./pages/ResultPage";
 
 const App: React.FC = () => {
   const { authState } = useContext(AuthContext);
@@ -19,6 +20,7 @@ const App: React.FC = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/game" element={<DrawPage />} />
+            <Route path="/result" element={<ResultPage />} />
           </Routes>
         </div>
       )}

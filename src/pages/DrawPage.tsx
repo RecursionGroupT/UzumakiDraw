@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import useSound from "use-sound";
 import SoundNext from "../sounds/playNext.mp3";
 import ToolBox from "../components/ToolBox/ToolBox";
@@ -65,6 +66,15 @@ const DrawPage = () => {
       <button className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600" type="button" onClick={handleNext}>
         NEXT
       </button>
+      <Link to="/result">
+        <button
+          className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600"
+          type="button"
+          onClick={handleNext}
+        >
+          RESULT
+        </button>
+      </Link>
     </div>
   );
 };
