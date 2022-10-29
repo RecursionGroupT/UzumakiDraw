@@ -1,5 +1,5 @@
 import Konva from "konva";
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect, useCallback } from "react";
 import { Layer, Stage, Line } from "react-konva";
 import { KonvaContext, IPenType, Drawing } from "../context/KonvaContext";
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
-  const { penType, penColor, penWidth, isPenDash } = useContext(KonvaContext);
+  const { penType, penColor, penWidth, isPenDash, setDrawPageStageDimensions } = useContext(KonvaContext);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
@@ -54,10 +54,15 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
     isDrawing.current = false;
   };
 
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     setWidth(window.innerWidth * 0.75);
     setHeight(window.innerHeight * 0.5);
-  };
+    setDrawPageStageDimensions({
+      width: window.innerWidth * 0.75,
+      height: window.innerHeight * 0.5,
+    });
+  }, [setDrawPageStageDimensions]);
+
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", () => {
@@ -68,7 +73,7 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
         handleResize();
       });
     };
-  }, []);
+  }, [handleResize]);
 
   return (
     <Stage

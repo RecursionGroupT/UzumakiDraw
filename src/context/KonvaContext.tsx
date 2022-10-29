@@ -21,6 +21,8 @@ export interface ILine {
 
 export type Drawing = ILine[] | [];
 
+type DrawPageStageDimensions = { width: number; height: number };
+
 interface IKonvaContext {
   penColor: string; // "black", "white"
   setPenColor: React.Dispatch<React.SetStateAction<string>>;
@@ -34,6 +36,8 @@ interface IKonvaContext {
   setIsTimerExpired: React.Dispatch<React.SetStateAction<boolean>>;
   drawings: Drawing[];
   setDrawings: React.Dispatch<React.SetStateAction<Drawing[]>>;
+  drawPageStageDimensions: DrawPageStageDimensions;
+  setDrawPageStageDimensions: React.Dispatch<React.SetStateAction<DrawPageStageDimensions>>;
 }
 
 type Props = {
@@ -56,6 +60,10 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [penWidth, setPenWidth] = useState<number>(1);
   const [isTimerExpired, setIsTimerExpired] = useState<boolean>(false);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
+  const [drawPageStageDimensions, setDrawPageStageDimensions] = useState<DrawPageStageDimensions>({
+    width: 0,
+    height: 0,
+  });
 
   const value = useMemo(
     () => ({
@@ -71,8 +79,10 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
       setIsTimerExpired,
       drawings,
       setDrawings,
+      drawPageStageDimensions,
+      setDrawPageStageDimensions,
     }),
-    [penColor, penWidth, penType, isPenDash, isTimerExpired, drawings]
+    [penColor, penWidth, penType, isPenDash, isTimerExpired, drawings, drawPageStageDimensions]
   );
 
   return <KonvaContext.Provider value={value}>{children}</KonvaContext.Provider>;

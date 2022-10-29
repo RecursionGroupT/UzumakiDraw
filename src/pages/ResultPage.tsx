@@ -1,11 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Group, Layer, Line, Rect, Stage, Text } from "react-konva";
+import { Layer, Stage } from "react-konva";
+import GroupDraw from "../components/GroupeDraw";
 import { KonvaContext } from "../context/KonvaContext";
 
 const ResultPage = () => {
-  const { drawings } = useContext(KonvaContext);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const { drawings } = useContext(KonvaContext);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedId, selectShape] = React.useState<string>("");
 
   const handleResize = () => {
     setWidth(window.innerWidth);
@@ -27,35 +31,19 @@ const ResultPage = () => {
   return (
     <Stage className="rounded-b-md border-4 border-black bg-white" height={height} width={width}>
       <Layer>
-        {drawings.map((drawing) => (
-          <Group
-            x={Math.random() * 500}
-            y={Math.random() * 500}
-            width={200}
-            height={200}
-            onMouseOver={() => console.log("mouse over")}
-            onClick={() => console.log("clicked")}
-            draggable
+        {drawings.map((drawing, idx) => (
+          <GroupDraw
+            drawing={drawing}
+            x={500}
+            y={500}
             scaleX={0.4}
             scaleY={0.4}
-          >
-            {drawing.map((line) => (
-              <Line
-                points={line.points}
-                stroke={line.color}
-                strokeWidth={line.width}
-                shadowBlur={line.penType.shadowBlur}
-                tension={0.4}
-                dash={[10, 20]}
-                dashEnabled={line.penType.dashEnabled}
-                lineCap={line.penType.lineCap}
-                lineJoin={line.penType.lineJoin}
-                globalCompositeOperation={line.penType.globalCompositeOperation}
-              />
-            ))}
-            <Rect fill="red" x={200} width={30} height={30} />
-            <Text />
-          </Group>
+            isSelected={idx.toString() === selectedId}
+            onSelect={() => {
+              console.log("selected ", idx.toString());
+              selectShape(idx.toString());
+            }}
+          />
         ))}
       </Layer>
     </Stage>
