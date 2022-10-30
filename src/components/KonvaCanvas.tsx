@@ -9,7 +9,7 @@ type Props = {
 };
 
 const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
-  const { penType, penColor, penWidth, isPenDash } = useContext(KonvaContext);
+  const { penType, penColor, penWidth, isPenDash, eraserWidth, penOpacity } = useContext(KonvaContext);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
@@ -22,10 +22,17 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
       const pos = stage.getPointerPosition();
       if (pos != null) {
         const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
-        setDrawing((prevDrawing) => [
-          ...prevDrawing,
-          { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth },
-        ]);
+        if (currPenType.name === "eraser") {
+          setDrawing((prevDrawing) => [
+            ...prevDrawing,
+            { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: eraserWidth, opacity: 1 },
+          ]);
+        } else {
+          setDrawing((prevDrawing) => [
+            ...prevDrawing,
+            { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth, opacity: penOpacity },
+          ]);
+        }
       }
     }
   };
@@ -55,9 +62,10 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
   };
 
   const handleResize = () => {
-    setWidth(window.innerWidth * 0.75);
-    setHeight(window.innerHeight * 0.5);
+    setWidth(window.innerWidth * 0.6);
+    setHeight(window.innerHeight * 0.6);
   };
+
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", () => {
@@ -85,6 +93,7 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
             points={line.points}
             stroke={line.color}
             strokeWidth={line.width}
+            opacity={line.opacity}
             shadowBlur={line.penType.shadowBlur}
             tension={0.4}
             dash={[10, 20]}

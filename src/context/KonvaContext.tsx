@@ -1,7 +1,7 @@
 import { LineCap, LineJoin } from "konva/lib/Shape";
 import { createContext, useState, useMemo } from "react";
 
-export type PenNames = "pencil" | "eraser" | "felt-tip" | "brush";
+export type PenNames = "pencil" | "eraser" | "brush";
 
 export interface IPenType {
   name: PenNames;
@@ -17,6 +17,7 @@ export interface ILine {
   points: number[];
   color: string;
   width: number;
+  opacity: number;
 }
 
 export type Drawing = ILine[] | [];
@@ -34,6 +35,10 @@ interface IKonvaContext {
   setIsTimerExpired: React.Dispatch<React.SetStateAction<boolean>>;
   drawings: Drawing[];
   setDrawings: React.Dispatch<React.SetStateAction<Drawing[]>>;
+  eraserWidth: number;
+  setEraserWidth: React.Dispatch<React.SetStateAction<number>>;
+  penOpacity: number;
+  setPenOpacity: React.Dispatch<React.SetStateAction<number>>;
 }
 
 type Props = {
@@ -45,15 +50,17 @@ export const KonvaContext: React.Context<IKonvaContext> = createContext({} as IK
 export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [penColor, setPenColor] = useState<string>("black");
   const [penType, setPenType] = useState<IPenType>({
-    name: "pencil",
-    lineCap: "butt",
-    lineJoin: "miter",
-    shadowBlur: 0,
+    name: "brush",
+    lineCap: "round",
+    lineJoin: "round",
+    shadowBlur: 1,
     globalCompositeOperation: "source-over",
     dashEnabled: false,
   });
   const [isPenDash, setIsPenDash] = useState<boolean>(false);
-  const [penWidth, setPenWidth] = useState<number>(1);
+  const [penWidth, setPenWidth] = useState<number>(10);
+  const [eraserWidth, setEraserWidth] = useState<number>(20);
+  const [penOpacity, setPenOpacity] = useState<number>(1);
   const [isTimerExpired, setIsTimerExpired] = useState<boolean>(false);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
 
@@ -71,8 +78,12 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
       setIsTimerExpired,
       drawings,
       setDrawings,
+      eraserWidth,
+      setEraserWidth,
+      penOpacity,
+      setPenOpacity,
     }),
-    [penColor, penWidth, penType, isPenDash, isTimerExpired, drawings]
+    [penColor, penWidth, penType, isPenDash, isTimerExpired, drawings, eraserWidth, penOpacity]
   );
 
   return <KonvaContext.Provider value={value}>{children}</KonvaContext.Provider>;

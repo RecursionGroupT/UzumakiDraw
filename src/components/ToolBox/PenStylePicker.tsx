@@ -1,26 +1,18 @@
 import React, { useContext } from "react";
 import { KonvaContext, PenNames, IPenType } from "../../context/KonvaContext";
+import PenStylePickerButton from "./PenStylePickerButton";
 
 const PenStylePicker = () => {
   const { penType, setPenType, isPenDash, setIsPenDash } = useContext(KonvaContext);
 
   const getPenStyle = (name: PenNames): IPenType => {
     switch (name) {
-      case "felt-tip":
-        return {
-          name: "felt-tip",
-          lineCap: "round",
-          lineJoin: "round",
-          shadowBlur: 1,
-          globalCompositeOperation: "source-over",
-          dashEnabled: false,
-        };
       case "brush":
         return {
           name: "brush",
           lineCap: "round",
           lineJoin: "round",
-          shadowBlur: 7,
+          shadowBlur: 1,
           globalCompositeOperation: "source-over",
           dashEnabled: false,
         };
@@ -54,8 +46,8 @@ const PenStylePicker = () => {
     }
   };
 
-  const handlePenTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const penName = e.target.value as PenNames;
+  const handlePenTypeChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const penName = e.currentTarget.value as PenNames;
     setPenType(getPenStyle(penName));
   };
 
@@ -66,12 +58,10 @@ const PenStylePicker = () => {
 
   return (
     <>
-      <select value={penType.name} onChange={handlePenTypeChange}>
-        <option value="pencil">Pencil</option>
-        <option value="eraser">Eraser</option>
-        <option value="felt-tip">Felt-Tip</option>
-        <option value="brush">Brush</option>
-      </select>
+      <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+        <PenStylePickerButton value="brush" currentPen={penType.name} handleClick={handlePenTypeChange} />
+        <PenStylePickerButton value="eraser" currentPen={penType.name} handleClick={handlePenTypeChange} />
+      </div>
       <select value={isPenDash ? "dashed" : "default"} onChange={handlePenDashChange}>
         <option value="dashed">Dashed</option>
         <option value="default">Default</option>
