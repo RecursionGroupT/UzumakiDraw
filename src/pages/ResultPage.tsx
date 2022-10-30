@@ -1,3 +1,4 @@
+import { KonvaEventObject } from "konva/lib/Node";
 import React, { useContext, useEffect, useState } from "react";
 import { Layer, Stage } from "react-konva";
 import GroupDraw from "../components/GroupeDraw";
@@ -28,8 +29,22 @@ const ResultPage = () => {
     };
   }, []);
 
+  const checkDeselect = (e: KonvaEventObject<Event>) => {
+    // deselect when clicked on empty area
+    const clickedOnEmpty = e.target === e.target.getStage();
+    if (clickedOnEmpty) {
+      selectShape("");
+    }
+  };
+
   return (
-    <Stage className="rounded-b-md border-4 border-black bg-white" height={height} width={width}>
+    <Stage
+      className="rounded-b-md border-4 border-black bg-white"
+      height={height}
+      width={width}
+      onMouseDown={checkDeselect}
+      onTouchStart={checkDeselect}
+    >
       <Layer>
         {drawings.map((drawing, idx) => (
           <GroupDraw
