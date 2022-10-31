@@ -1,5 +1,6 @@
 import { LineCap, LineJoin } from "konva/lib/Shape";
 import { createContext, useState, useMemo } from "react";
+import { Category } from "../util/Subjects";
 
 export type PenNames = "pencil" | "eraser" | "brush";
 
@@ -19,7 +20,16 @@ export interface ILine {
   opacity: number;
 }
 
-export type Drawing = ILine[] | [];
+export interface Drawing {
+  lines: ILine[] | [];
+  category: Category;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
+type DrawPageStageDimensions = { width: number; height: number };
 
 interface IKonvaContext {
   penColor: string; // "black", "white"
@@ -38,6 +48,8 @@ interface IKonvaContext {
   setEraserWidth: React.Dispatch<React.SetStateAction<number>>;
   penOpacity: number;
   setPenOpacity: React.Dispatch<React.SetStateAction<number>>;
+  drawPageStageDimensions: DrawPageStageDimensions;
+  setDrawPageStageDimensions: React.Dispatch<React.SetStateAction<DrawPageStageDimensions>>;
 }
 
 type Props = {
@@ -61,6 +73,10 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [penOpacity, setPenOpacity] = useState<number>(1);
   const [isTimerExpired, setIsTimerExpired] = useState<boolean>(false);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
+  const [drawPageStageDimensions, setDrawPageStageDimensions] = useState<DrawPageStageDimensions>({
+    width: 0,
+    height: 0,
+  });
 
   const value = useMemo(
     () => ({
@@ -80,8 +96,10 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
       setEraserWidth,
       penOpacity,
       setPenOpacity,
+      drawPageStageDimensions,
+      setDrawPageStageDimensions,
     }),
-    [penColor, penWidth, penType, isPenDash, isTimerExpired, drawings, eraserWidth, penOpacity]
+    [penColor, penWidth, penType, isPenDash, isTimerExpired, drawings, eraserWidth, penOpacity, drawPageStageDimensions]
   );
 
   return <KonvaContext.Provider value={value}>{children}</KonvaContext.Provider>;

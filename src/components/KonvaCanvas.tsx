@@ -1,5 +1,5 @@
 import Konva from "konva";
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect, useCallback } from "react";
 import { Layer, Stage, Line, Circle } from "react-konva";
 import { KonvaContext, IPenType, Drawing } from "../context/KonvaContext";
 
@@ -14,7 +14,8 @@ interface CursorPos {
 }
 
 const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
-  const { penType, penColor, penWidth, isPenDash, eraserWidth, penOpacity } = useContext(KonvaContext);
+  const { penType, penColor, penWidth, isPenDash, eraserWidth, penOpacity, setDrawPageStageDimensions } =
+    useContext(KonvaContext);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [cursorPos, setCursorPos] = useState<CursorPos | null>(null);
@@ -29,15 +30,23 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
       if (pos != null) {
         const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
         if (currPenType.name === "eraser") {
-          setDrawing((prevDrawing) => [
-            ...prevDrawing,
-            { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: eraserWidth, opacity: 1 },
-          ]);
+          setDrawing((prevDrawing) => {
+            const newDrawing = { ...prevDrawing };
+            newDrawing.lines = [
+              ...prevDrawing.lines,
+              { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: eraserWidth, opacity: 1 },
+            ];
+            return newDrawing;
+          });
         } else {
-          setDrawing((prevDrawing) => [
-            ...prevDrawing,
-            { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth, opacity: penOpacity },
-          ]);
+          setDrawing((prevDrawing) => {
+            const newDrawing = { ...prevDrawing };
+            newDrawing.lines = [
+              ...prevDrawing.lines,
+              { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth, opacity: penOpacity },
+            ];
+            return newDrawing;
+          });
         }
       }
     }
@@ -57,14 +66,18 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
 
     if (stage != null) {
       const point = stage.getPointerPosition();
-      const lastLine = drawing[drawing.length - 1];
+      const lastLine = drawing.lines[drawing.lines.length - 1];
       // add point
       if (point != null) {
         lastLine.points = lastLine.points.concat([point.x, point.y]);
 
         // replace last
-        drawing.splice(drawing.length - 1, 1, lastLine);
-        setDrawing(drawing.concat());
+        drawing.lines.splice(drawing.lines.length - 1, 1, lastLine);
+        setDrawing((prevDrawing) => {
+          const newDrawing = { ...prevDrawing };
+          newDrawing.lines = drawing.lines.concat();
+          return newDrawing;
+        });
       }
     }
   };
@@ -90,10 +103,14 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
     }
   };
 
-  const handleResize = () => {
-    setWidth(window.innerWidth * 0.6);
-    setHeight(window.innerHeight * 0.6);
-  };
+  const handleResize = useCallback(() => {
+    setWidth(window.innerWidth * 0.5);
+    setHeight(window.innerHeight * 0.5);
+    setDrawPageStageDimensions({
+      width: window.innerWidth * 0.5,
+      height: window.innerHeight * 0.5,
+    });
+  }, [setDrawPageStageDimensions]);
 
   useEffect(() => {
     handleResize();
@@ -105,7 +122,7 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
         handleResize();
       });
     };
-  }, []);
+  }, [handleResize]);
 
   return (
     <Stage
@@ -119,7 +136,7 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
       onMouseLeave={handleMouseLeave}
     >
       <Layer>
-        {drawing.map((line) => (
+        {drawing.lines.map((line) => (
           <Line
             points={line.points}
             stroke={line.color}
