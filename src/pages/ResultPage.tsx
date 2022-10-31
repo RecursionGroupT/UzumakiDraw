@@ -1,33 +1,75 @@
 import { KonvaEventObject } from "konva/lib/Node";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useRef, useEffect } from "react";
+import Konva from "konva";
 import { Layer, Stage } from "react-konva";
 import GroupDraw from "../components/GroupeDraw";
-import { KonvaContext } from "../context/KonvaContext";
+import { Drawing, KonvaContext } from "../context/KonvaContext";
+import type { Category } from "../util/Subjects";
 
 const ResultPage = () => {
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
-  const { drawings } = useContext(KonvaContext);
+  const { drawings, setDrawings } = useContext(KonvaContext);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedId, selectShape] = React.useState<string>("");
 
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-    setHeight(window.innerHeight * 0.8);
+  const stageRef = useRef<Konva.Stage>(null);
+
+  const downloadURI = (uri: string, name: string) => {
+    const link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", () => {
-      handleResize();
-    });
-    return () => {
-      window.removeEventListener("resize", () => {
-        handleResize();
+    setDrawings((prevDrawings) => {
+      const newDrawings: Drawing[] = [];
+      prevDrawings.forEach((drawing) => {
+        newDrawings.push({ ...drawing, x: position(drawing.category, "x"), y: position(drawing.category, "y") });
       });
-    };
-  }, []);
+      return newDrawings;
+    });
+  }, [setDrawings]);
+
+  const position = (category: Category, Coordinate: "x" | "y"): number => {
+    if (Coordinate === "x") {
+      if (category === "INTRO") {
+        return 400;
+      }
+      if (category === "FOOD") {
+        return Math.random() * 250;
+      }
+      if (category === "SPORT") {
+        return Math.random() * 250 + 500;
+      }
+      if (category === "HOBBY") {
+        return Math.random() * 250;
+      }
+      if (category === "GAME") {
+        return Math.random() * 250 + 500;
+      }
+    }
+    if (Coordinate === "y") {
+      if (category === "INTRO") {
+        return 450;
+      }
+      if (category === "FOOD") {
+        return Math.random() * 300;
+      }
+      if (category === "SPORT") {
+        return Math.random() * 300;
+      }
+      if (category === "HOBBY") {
+        return Math.random() * 300 + 580;
+      }
+      if (category === "GAME") {
+        return Math.random() * 300 + 580;
+      }
+    }
+    return 0;
+  };
 
   const checkDeselect = (e: KonvaEventObject<Event>) => {
     // deselect when clicked on empty area
@@ -38,30 +80,46 @@ const ResultPage = () => {
   };
 
   return (
-    <Stage
-      className="rounded-b-md border-4 border-black bg-white"
-      height={height}
-      width={width}
-      onMouseDown={checkDeselect}
-      onTouchStart={checkDeselect}
-    >
-      <Layer>
-        {drawings.map((drawing, idx) => (
-          <GroupDraw
-            drawing={drawing}
-            x={500}
-            y={500}
-            scaleX={0.4}
-            scaleY={0.4}
-            isSelected={idx.toString() === selectedId}
-            onSelect={() => {
-              console.log("selected ", idx.toString());
-              selectShape(idx.toString());
-            }}
-          />
-        ))}
-      </Layer>
-    </Stage>
+    <>
+      <Stage
+        ref={stageRef}
+        className="m-auto w-[1088px] rounded-md border-4 bg-white"
+        height={1080}
+        width={1080}
+        onMouseDown={checkDeselect}
+        onTouchStart={checkDeselect}
+      >
+        <Layer>
+          {drawings.map((drawing, idx) => (
+            <GroupDraw
+              drawing={drawing}
+              width={drawing.width}
+              height={drawing.height}
+              x={drawing.x}
+              y={drawing.y}
+              scaleX={0.4}
+              scaleY={0.4}
+              isSelected={idx.toString() === selectedId}
+              onSelect={() => {
+                console.log("selected ", idx.toString());
+                selectShape(idx.toString());
+              }}
+            />
+          ))}
+        </Layer>
+      </Stage>
+      <button
+        type="button"
+        onClick={() => {
+          if (stageRef.current) {
+            const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
+            downloadURI(dataURL, "stage.png");
+          }
+        }}
+      >
+        save as image
+      </button>
+    </>
   );
 };
 

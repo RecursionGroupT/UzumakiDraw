@@ -1,14 +1,16 @@
 /* eslint-disable react/jsx-no-bind */
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import React, { useEffect, useRef, useContext } from "react";
+import React, { useEffect, useRef } from "react";
 import { Group, Line, Transformer, Rect } from "react-konva";
-import { Drawing, KonvaContext } from "../context/KonvaContext";
+import { Drawing } from "../context/KonvaContext";
 
 interface Props {
   drawing: Drawing;
   x: number;
   y: number;
+  width: number;
+  height: number;
   scaleX: number;
   scaleY: number;
   isSelected: boolean;
@@ -16,8 +18,8 @@ interface Props {
   // onChange: () => void;
 }
 
-const GroupDraw: React.FC<Props> = ({ drawing, x, y, scaleX, scaleY, isSelected, onSelect }) => {
-  const { drawPageStageDimensions } = useContext(KonvaContext);
+const GroupDraw: React.FC<Props> = ({ drawing, x, y, width, height, scaleX, scaleY, isSelected, onSelect }) => {
+  console.log(x, y);
   const trRef = useRef<Konva.Transformer>(null);
   const grpRef = useRef<Konva.Group>(null);
 
@@ -40,8 +42,8 @@ const GroupDraw: React.FC<Props> = ({ drawing, x, y, scaleX, scaleY, isSelected,
   return (
     <>
       <Group onClick={() => onSelect()} ref={grpRef} x={x} y={y} scaleX={scaleX} scaleY={scaleY} draggable>
-        <Rect width={drawPageStageDimensions.width} height={drawPageStageDimensions.height} id="invisible-rect" />
-        {drawing.map((line) => (
+        <Rect width={width} height={height} id="invisible-rect" />
+        {drawing.lines.map((line) => (
           <Line
             points={line.points}
             stroke={line.color}
