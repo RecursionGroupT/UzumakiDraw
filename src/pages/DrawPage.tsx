@@ -7,13 +7,13 @@ import KonvaCanvas from "../components/KonvaCanvas";
 import SubjectDisplay from "../components/DrawPage/SubjectDisplay";
 import Timer from "../components/DrawPage/Timer";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
-
-const subjects: string[] = ["自己紹介を書いてください", "主題１", "主題２", "主題３", "主題４", "主題５"];
+import type { Subject } from "../util/Subjects";
+import { subjects } from "../util/Subjects";
 
 const DrawPage = () => {
-  const [drawing, setDrawing] = useState<Drawing>([]);
-  const [subject, setSubject] = useState<string>(subjects[0]);
-  const [subjectArray, setSubjectArray] = useState<string[]>(subjects);
+  const [drawing, setDrawing] = useState<Drawing>({ lines: [], category: null });
+  const [subjectArray, setSubjectArray] = useState<Subject[]>(subjects);
+  const [subject, setSubject] = useState<Subject>(subjects[0]);
   const [timerKey, setTimerKey] = useState(0);
   const [playNext] = useSound<string>(SoundNext as string);
 
@@ -37,9 +37,9 @@ const DrawPage = () => {
     playNext();
     subjectChange(); // change subject title
     setTimerKey((prevTimerKey) => prevTimerKey + 1); // reload timer
-    setDrawings((prevDrawings) => [...prevDrawings, drawing]); // save current canvas
-    setDrawing([]); // clear current canvas
-  }, [drawing, setDrawings, subjectChange, playNext]);
+    setDrawings((prevDrawings) => [...prevDrawings, { ...drawing, category: subject.category }]); // save current canvas
+    setDrawing({ lines: [], category: null }); // clear current canvas
+  }, [drawing, setDrawings, subjectChange, playNext, subject.category]);
 
   useEffect(() => {
     if (isTimerExpired) {
@@ -58,7 +58,7 @@ const DrawPage = () => {
           <ToolBox />
         </div>
         <div className="mt-8 basis-4/6">
-          <SubjectDisplay subject={subject} />
+          <SubjectDisplay subject={subject.title} />
           <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
         </div>
         <div className="basis-1/6" />
