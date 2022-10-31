@@ -11,13 +11,13 @@ import type { Subject } from "../util/Subjects";
 import { subjects } from "../util/Subjects";
 
 const DrawPage = () => {
-  const [drawing, setDrawing] = useState<Drawing>({ lines: [], category: null });
+  const [drawing, setDrawing] = useState<Drawing>({ lines: [], category: null, width: 0, height: 0, x: 0, y: 0 });
   const [subjectArray, setSubjectArray] = useState<Subject[]>(subjects);
   const [subject, setSubject] = useState<Subject>(subjects[0]);
   const [timerKey, setTimerKey] = useState(0);
   const [playNext] = useSound<string>(SoundNext as string);
 
-  const { setDrawings, isTimerExpired, setIsTimerExpired } = useContext(KonvaContext);
+  const { setDrawings, isTimerExpired, setIsTimerExpired, drawPageStageDimensions } = useContext(KonvaContext);
 
   const subjectChange = useCallback(() => {
     if (subjectArray.length > 1) {
@@ -37,9 +37,17 @@ const DrawPage = () => {
     playNext();
     subjectChange(); // change subject title
     setTimerKey((prevTimerKey) => prevTimerKey + 1); // reload timer
-    setDrawings((prevDrawings) => [...prevDrawings, { ...drawing, category: subject.category }]); // save current canvas
-    setDrawing({ lines: [], category: null }); // clear current canvas
-  }, [drawing, setDrawings, subjectChange, playNext, subject.category]);
+    setDrawings((prevDrawings) => [
+      ...prevDrawings,
+      {
+        ...drawing,
+        category: subject.category,
+        width: drawPageStageDimensions.width,
+        height: drawPageStageDimensions.height,
+      },
+    ]); // save current canvas
+    setDrawing({ lines: [], category: null, width: 0, height: 0, x: 0, y: 0 }); // clear current canvas
+  }, [drawing, setDrawings, subjectChange, playNext, subject.category, drawPageStageDimensions]);
 
   useEffect(() => {
     if (isTimerExpired) {
