@@ -1,6 +1,6 @@
 import Konva from "konva";
 import React, { useState, useRef, useContext, useEffect } from "react";
-import { Layer, Stage, Line } from "react-konva";
+import { Layer, Stage, Line, TextPath } from "react-konva";
 import { KonvaContext, IPenType, Drawing } from "../context/KonvaContext";
 
 type Props = {
@@ -22,10 +22,14 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
       const pos = stage.getPointerPosition();
       if (pos != null) {
         const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
-        setDrawing((prevDrawing) => [
-          ...prevDrawing,
-          { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth },
-        ]);
+        setDrawing((prevDrawing) => {
+          const newDrawing = { ...prevDrawing };
+          newDrawing.lines = [
+            ...prevDrawing.lines,
+            { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth },
+          ];
+          return newDrawing;
+        });
       }
     }
   };
@@ -38,14 +42,18 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
     const stage = e.target.getStage();
     if (stage != null) {
       const point = stage.getPointerPosition();
-      const lastLine = drawing[drawing.length - 1];
+      const lastLine = drawing.lines[drawing.lines.length - 1];
       // add point
       if (point != null) {
         lastLine.points = lastLine.points.concat([point.x, point.y]);
 
         // replace last
-        drawing.splice(drawing.length - 1, 1, lastLine);
-        setDrawing(drawing.concat());
+        drawing.lines.splice(drawing.lines.length - 1, 1, lastLine);
+        setDrawing((prevDrawing) => {
+          const newDrawing = { ...prevDrawing };
+          newDrawing.lines = drawing.lines.concat();
+          return newDrawing;
+        });
       }
     }
   };
@@ -80,7 +88,7 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
       onMouseup={handleMouseUp}
     >
       <Layer>
-        {drawing.map((line) => (
+        {drawing.lines.map((line) => (
           <Line
             points={line.points}
             stroke={line.color}
@@ -94,6 +102,7 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
             globalCompositeOperation={line.penType.globalCompositeOperation}
           />
         ))}
+        <TextPath text="Simple Text" />
       </Layer>
     </Stage>
   );

@@ -1,5 +1,6 @@
 import { LineCap, LineJoin } from "konva/lib/Shape";
 import { createContext, useState, useMemo } from "react";
+import { Category } from "../util/Subjects";
 
 export type PenNames = "pencil" | "eraser" | "felt-tip" | "brush";
 
@@ -19,7 +20,10 @@ export interface ILine {
   width: number;
 }
 
-export type Drawing = ILine[] | [];
+export interface Drawing {
+  lines: ILine[] | [];
+  category: Category;
+}
 
 interface IKonvaContext {
   penColor: string; // "black", "white"
