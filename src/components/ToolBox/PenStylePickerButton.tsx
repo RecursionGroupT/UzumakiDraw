@@ -1,11 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaPencilAlt, FaPaintBrush, FaEraser } from "react-icons/fa";
+import { AiOutlineLine, AiOutlineDash } from "react-icons/ai";
 import { PenNames } from "../../context/KonvaContext";
 
 type Props = {
-  value: PenNames;
-  currentPen: PenNames;
+  value: PenNames | "dashed" | "default";
+  currentPen: PenNames | "dashed" | "default";
   handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -16,6 +17,12 @@ const PenStylePickerButton: React.FC<Props> = ({ value, handleClick, currentPen 
     }
     if (value === "brush") {
       return <FaPaintBrush size={30} />;
+    }
+    if (value === "default") {
+      return <AiOutlineLine size={30} />;
+    }
+    if (value === "dashed") {
+      return <AiOutlineDash size={30} />;
     }
     return <FaEraser size={30} />;
   };

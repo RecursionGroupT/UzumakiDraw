@@ -1,17 +1,11 @@
-// import { signOut } from "firebase/auth";
-// import React, { useContext } from "react";
-// import { AuthContext } from "../context/AuthContext";
-// import { auth } from "../firebase/config";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 import useLogin from "../hooks/useLogin";
 
 const LandingPage = () => {
   const { googleLogin } = useLogin();
-  // const { authState, dispatch } = useContext(AuthContext);
-
-  // const logout = async () => {
-  //   await signOut(auth);
-  //   dispatch({ type: "LOGOUT" });
-  // };
+  const { authState } = useContext(AuthContext);
 
   return (
     <div>
@@ -21,22 +15,26 @@ const LandingPage = () => {
           <p className="text-5xl font-bold">
             ゲーム感覚で自分の<span className="bg-blue-300 p-2">偏愛マップ</span>を作ろう！
           </p>
-          <button
-            className="m-4 rounded-xl bg-gray-900 py-6 px-10 text-xl font-semibold tracking-wider text-white "
-            type="button"
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={googleLogin}
-          >
-            GOOGLEでサインイン
-          </button>
-
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-          {/* <button type="button" onClick={logout}>
-          Logout
-        </button>
-        <br />
-        <h1>{authState.user?.displayName}</h1>
-        <img src={authState.user?.photoURL as string} alt="" /> */}
+          {authState.user ? (
+            <Link to="/home">
+              <button
+                className="m-4 rounded-xl bg-gray-900 py-6 px-10 text-xl font-semibold tracking-wider text-white "
+                type="button"
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              >
+                Get Started
+              </button>
+            </Link>
+          ) : (
+            <button
+              className="m-4 rounded-xl bg-gray-900 py-6 px-10 text-xl font-semibold tracking-wider text-white "
+              type="button"
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={googleLogin}
+            >
+              GOOGLEでサインイン
+            </button>
+          )}
         </div>
       </div>
       <div className="flex justify-between space-x-8 p-28">

@@ -42,9 +42,8 @@ const ResultPage = () => {
                       stroke={line.color}
                       strokeWidth={line.width}
                       opacity={line.opacity}
-                      shadowBlur={line.penType.shadowBlur}
                       tension={0.4}
-                      dash={[10, 20]}
+                      dash={[line.width, line.width * 2]}
                       dashEnabled={line.penType.dashEnabled}
                       lineCap={line.penType.lineCap}
                       lineJoin={line.penType.lineJoin}

@@ -12,7 +12,6 @@ const PenStylePicker = () => {
           name: "brush",
           lineCap: "round",
           lineJoin: "round",
-          shadowBlur: 1,
           globalCompositeOperation: "source-over",
           dashEnabled: false,
         };
@@ -21,7 +20,6 @@ const PenStylePicker = () => {
           name: "pencil",
           lineCap: "butt",
           lineJoin: "miter",
-          shadowBlur: 0,
           globalCompositeOperation: "source-over",
           dashEnabled: false,
         };
@@ -30,7 +28,6 @@ const PenStylePicker = () => {
           name: "eraser",
           lineCap: "round",
           lineJoin: "round",
-          shadowBlur: 0,
           globalCompositeOperation: "destination-out",
           dashEnabled: false,
         };
@@ -39,7 +36,6 @@ const PenStylePicker = () => {
           name: "pencil",
           lineCap: "butt",
           lineJoin: "miter",
-          shadowBlur: 0,
           globalCompositeOperation: "source-over",
           dashEnabled: false,
         };
@@ -51,8 +47,8 @@ const PenStylePicker = () => {
     setPenType(getPenStyle(penName));
   };
 
-  const handlePenDashChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const penDash = e.target.value;
+  const handlePenDashChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const penDash = e.currentTarget.value;
     setIsPenDash(penDash === "dashed");
   };
 
@@ -62,10 +58,18 @@ const PenStylePicker = () => {
         <PenStylePickerButton value="brush" currentPen={penType.name} handleClick={handlePenTypeChange} />
         <PenStylePickerButton value="eraser" currentPen={penType.name} handleClick={handlePenTypeChange} />
       </div>
-      <select value={isPenDash ? "dashed" : "default"} onChange={handlePenDashChange}>
-        <option value="dashed">Dashed</option>
-        <option value="default">Default</option>
-      </select>
+      <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+        <PenStylePickerButton
+          value="default"
+          currentPen={isPenDash ? "dashed" : "default"}
+          handleClick={handlePenDashChange}
+        />
+        <PenStylePickerButton
+          value="dashed"
+          currentPen={isPenDash ? "dashed" : "default"}
+          handleClick={handlePenDashChange}
+        />
+      </div>
     </>
   );
 };

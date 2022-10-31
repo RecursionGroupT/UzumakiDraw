@@ -14,7 +14,7 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       {authState.authIsReady && (
-        <div className="min-h-screen bg-orange-200">
+        <div className="min-h-screen overflow-hidden bg-orange-200">
           <Header />
           <Routes>
             <Route path="/" element={<LandingPage />} />

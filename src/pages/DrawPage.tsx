@@ -57,7 +57,7 @@ const DrawPage = () => {
   }, [drawing, setDrawings, subjectChange, playNext, reset, start]);
 
   return (
-    <div className="relative mx-10 flex h-5/6 min-w-[1100px] flex-col space-y-4 p-2">
+    <div className="relative mx-5 flex h-5/6 min-w-[1100px] flex-col space-y-4">
       <div className="absolute top-0 right-0">{/* <Timer timerKey={timerKey} /> */}</div>
       <div className="flex h-full space-x-8 p-4">
         <div className="grid basis-1/6 content-center">

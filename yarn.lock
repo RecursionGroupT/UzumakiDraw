@@ -8984,6 +8984,11 @@
     "ansi-styles" "^6.0.0"
     "is-fullwidth-code-point" "^4.0.0"
 
+"slider-color-picker@^0.2.3":
+  "integrity" "sha512-zSfItRrKJS6/w3cbBRoTtkJroRQQHoLpn/QkSYWSgzzZGt8lkcTBhPQ9erza3FLHxvYpRTMmBZyzfZdMelDHHw=="
+  "resolved" "https://registry.npmjs.org/slider-color-picker/-/slider-color-picker-0.2.3.tgz"
+  "version" "0.2.3"
+
 "sockjs@^0.3.24":
   "integrity" "sha512-GJgLTZ7vYb/JtPSSZ10hsOYIvEYsjbNU+zPdIHcUaWVNUEPivzxku31865sSSud0Da0W4lEeOPlmw93zLQchuQ=="
   "resolved" "https://registry.npmjs.org/sockjs/-/sockjs-0.3.24.tgz"

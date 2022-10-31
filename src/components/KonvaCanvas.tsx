@@ -109,7 +109,7 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
 
   return (
     <Stage
-      className="rounded-b-md border-4 border-black bg-white"
+      className="rounded-b-lg border-4 border-black bg-white"
       width={width}
       height={height}
       onMouseDown={handleMouseDown}
@@ -125,9 +125,8 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
             stroke={line.color}
             strokeWidth={line.width}
             opacity={line.opacity}
-            shadowBlur={line.penType.shadowBlur}
             tension={0.4}
-            dash={[10, 20]}
+            dash={[line.width, line.width * 2]}
             dashEnabled={line.penType.dashEnabled}
             lineCap={line.penType.lineCap}
             lineJoin={line.penType.lineJoin}

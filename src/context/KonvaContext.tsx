@@ -7,7 +7,6 @@ export interface IPenType {
   name: PenNames;
   lineCap: LineCap;
   lineJoin: LineJoin;
-  shadowBlur: number;
   globalCompositeOperation: GlobalCompositeOperation;
   dashEnabled: boolean;
 }
@@ -53,13 +52,12 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
     name: "brush",
     lineCap: "round",
     lineJoin: "round",
-    shadowBlur: 1,
     globalCompositeOperation: "source-over",
     dashEnabled: false,
   });
   const [isPenDash, setIsPenDash] = useState<boolean>(false);
   const [penWidth, setPenWidth] = useState<number>(10);
-  const [eraserWidth, setEraserWidth] = useState<number>(20);
+  const [eraserWidth, setEraserWidth] = useState<number>(50);
   const [penOpacity, setPenOpacity] = useState<number>(1);
   const [isTimerExpired, setIsTimerExpired] = useState<boolean>(false);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
