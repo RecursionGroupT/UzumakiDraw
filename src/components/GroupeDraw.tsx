@@ -19,7 +19,6 @@ interface Props {
 }
 
 const GroupDraw: React.FC<Props> = ({ drawing, x, y, width, height, scaleX, scaleY, isSelected, onSelect }) => {
-  console.log(x, y);
   const trRef = useRef<Konva.Transformer>(null);
   const grpRef = useRef<Konva.Group>(null);
 
