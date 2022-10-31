@@ -14,7 +14,6 @@ const DrawPage = () => {
   const [drawing, setDrawing] = useState<Drawing>({ lines: [], category: null });
   const [subjectArray, setSubjectArray] = useState<Subject[]>(subjects);
   const [subject, setSubject] = useState<Subject>(subjects[0]);
-  const [subjectTitle, setSubjectTitle] = useState<string>(subjects[0].title);
   const [timerKey, setTimerKey] = useState(0);
   const [playNext] = useSound<string>(SoundNext as string);
 
@@ -28,7 +27,6 @@ const DrawPage = () => {
 
         const randomNum: number = Math.floor(Math.random() * newSubjectArray.length);
         setSubject(newSubjectArray[randomNum]);
-        setSubjectTitle(newSubjectArray[randomNum].title);
 
         return newSubjectArray;
       });
@@ -60,7 +58,7 @@ const DrawPage = () => {
           <ToolBox />
         </div>
         <div className="mt-8 basis-4/6">
-          <SubjectDisplay subject={subjectTitle} />
+          <SubjectDisplay subject={subject.title} />
           <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
         </div>
         <div className="basis-1/6" />
