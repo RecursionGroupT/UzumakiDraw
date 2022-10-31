@@ -1,15 +1,13 @@
-import { KonvaEventObject } from "konva/lib/Node";
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Konva from "konva";
 import { Layer, Stage } from "react-konva";
+import ToolBox from "../components/ToolBox/ToolBox";
 import GroupDraw from "../components/GroupeDraw";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
 import type { Category } from "../util/Subjects";
 
 const ResultPage = () => {
   const { drawings, setDrawings } = useContext(KonvaContext);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedId, selectShape] = React.useState<string>("");
 
   const stageRef = useRef<Konva.Stage>(null);
@@ -71,7 +69,7 @@ const ResultPage = () => {
     return 0;
   };
 
-  const checkDeselect = (e: KonvaEventObject<Event>) => {
+  const checkDeselect = (e: Konva.KonvaEventObject<Event>) => {
     // deselect when clicked on empty area
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
@@ -80,46 +78,55 @@ const ResultPage = () => {
   };
 
   return (
-    <>
-      <Stage
-        ref={stageRef}
-        className="m-auto w-[1088px] rounded-md border-4 bg-white"
-        height={1080}
-        width={1080}
-        onMouseDown={checkDeselect}
-        onTouchStart={checkDeselect}
-      >
-        <Layer>
-          {drawings.map((drawing, idx) => (
-            <GroupDraw
-              drawing={drawing}
-              width={drawing.width}
-              height={drawing.height}
-              x={drawing.x}
-              y={drawing.y}
-              scaleX={0.4}
-              scaleY={0.4}
-              isSelected={idx.toString() === selectedId}
-              onSelect={() => {
-                console.log("selected ", idx.toString());
-                selectShape(idx.toString());
-              }}
-            />
-          ))}
-        </Layer>
-      </Stage>
-      <button
-        type="button"
-        onClick={() => {
-          if (stageRef.current) {
-            const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
-            downloadURI(dataURL, "stage.png");
-          }
-        }}
-      >
-        save as image
-      </button>
-    </>
+    <div className="relative mx-10 flex h-5/6 min-w-[1100px] flex-col space-y-4 p-2">
+      <div className="flex h-full space-x-8 p-4">
+        <div className="grid basis-1/6 content-center">
+          <ToolBox />
+        </div>
+        <div className="mt-1 basis-4/6">
+          <Stage
+            ref={stageRef}
+            className="m-auto w-[908px] rounded-md border-4 bg-white"
+            height={800}
+            width={900}
+            onMouseDown={checkDeselect}
+            onTouchStart={checkDeselect}
+          >
+            <Layer>
+              {drawings.map((drawing, idx) => (
+                <GroupDraw
+                  drawing={drawing}
+                  width={drawing.width}
+                  height={drawing.height}
+                  x={drawing.x}
+                  y={drawing.y}
+                  scaleX={0.3}
+                  scaleY={0.3}
+                  isSelected={idx.toString() === selectedId}
+                  onSelect={() => {
+                    console.log("selected ", idx.toString());
+                    selectShape(idx.toString());
+                  }}
+                />
+              ))}
+            </Layer>
+          </Stage>
+        </div>
+        <div className="basis-1/6">
+          <button
+            type="button"
+            onClick={() => {
+              if (stageRef.current) {
+                const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
+                downloadURI(dataURL, "stage.png");
+              }
+            }}
+          >
+            save as image
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

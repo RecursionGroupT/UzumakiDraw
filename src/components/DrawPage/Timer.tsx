@@ -1,53 +1,26 @@
-import React, { useContext } from "react";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import useSound from "use-sound";
-import SoundWarn from "../../sounds/playWarn.mp3";
-import SoundNext from "../../sounds/playNext.mp3";
-import { KonvaContext } from "../../context/KonvaContext";
+import React from "react";
 
 type Props = {
-  timerKey: number;
+  seconds: number;
+  initialTime: number;
 };
 
-const Timer: React.FC<Props> = ({ timerKey }) => {
-  const { isTimerExpired, setIsTimerExpired } = useContext(KonvaContext);
-  const [playWarn] = useSound(SoundWarn as string);
-  const [playNext] = useSound(SoundNext as string);
+const Timer: React.FC<Props> = ({ seconds, initialTime }) => {
+  const secondsToPercentage = () => (seconds / initialTime) * 100;
 
-  const renderTime = ({ remainingTime }: { remainingTime: number }) => {
-    if (remainingTime === 10) {
-      playWarn({ playbackRate: 5 });
-    }
-
-    if (remainingTime === 0) {
-      setIsTimerExpired(true);
-      playNext();
-      return <div>{isTimerExpired && <span>タイムアウト</span>}</div>;
-    }
-
-    return (
-      <div>
-        <div>Remaining</div>
-        <div>{remainingTime}</div>
-        <div>seconds</div>
-      </div>
-    );
+  const getColor = () => {
+    const percentage = secondsToPercentage();
+    if (percentage > 25) return "bg-green-400";
+    if (percentage > 10) return "bg-yellow-400";
+    return "bg-red-400";
   };
 
   return (
-    <div className="App">
-      <div>
-        <CountdownCircleTimer
-          key={timerKey}
-          isPlaying
-          duration={30}
-          colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-          colorsTime={[10, 6, 3, 0]}
-          onComplete={() => ({ shouldRepeat: false })}
-        >
-          {renderTime}
-        </CountdownCircleTimer>
-      </div>
+    <div className="h-2.5 w-full border-x-4 border-black bg-gray-600">
+      <div
+        className={`h-2.5 rounded-r-md ${getColor()}`}
+        style={{ width: `${secondsToPercentage()}%`, transition: "width linear" }}
+      />
     </div>
   );
 };

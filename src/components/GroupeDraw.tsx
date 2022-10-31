@@ -47,7 +47,6 @@ const GroupDraw: React.FC<Props> = ({ drawing, x, y, width, height, scaleX, scal
             points={line.points}
             stroke={line.color}
             strokeWidth={line.width}
-            shadowBlur={line.penType.shadowBlur}
             tension={0.4}
             dash={[10, 20]}
             dashEnabled={line.penType.dashEnabled}
