@@ -1,16 +1,24 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useMemo, useRef } from "react";
 import Konva from "konva";
-import { Layer, Stage } from "react-konva";
+import { Layer, Stage, Text } from "react-konva";
 import ToolBox from "../components/ToolBox/ToolBox";
 import GroupDraw from "../components/GroupeDraw";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
-import type { Category } from "../util/Subjects";
 
 const ResultPage = () => {
   const { drawings, setDrawings } = useContext(KonvaContext);
   const [selectedId, selectShape] = React.useState<string>("");
-
   const stageRef = useRef<Konva.Stage>(null);
+
+  const categories: string[] = useMemo(() => ["FOOD", "HOBBY", "SPORT", "GAME"], []);
+
+  const shuffleArray = (inputArray: string[]) => {
+    inputArray.sort(() => Math.random() - 0.5);
+  };
+  shuffleArray(categories);
+
+  const newCategories = useMemo(() => ["INTRO", ...categories], [categories]);
+  console.log(newCategories);
 
   const downloadURI = (uri: string, name: string) => {
     const link = document.createElement("a");
@@ -25,45 +33,93 @@ const ResultPage = () => {
     setDrawings((prevDrawings) => {
       const newDrawings: Drawing[] = [];
       prevDrawings.forEach((drawing) => {
-        newDrawings.push({ ...drawing, x: position(drawing.category, "x"), y: position(drawing.category, "y") });
+        if (drawing.category === "INTRO") {
+          newDrawings.push({
+            ...drawing,
+            x: position(newCategories.indexOf("INTRO"), "x"),
+            y: position(newCategories.indexOf("INTRO"), "y"),
+          });
+        }
+        if (drawing.category === "FOOD") {
+          newDrawings.push({
+            ...drawing,
+            x: position(newCategories.indexOf("FOOD"), "x"),
+            y: position(newCategories.indexOf("FOOD"), "y"),
+          });
+        }
+        if (drawing.category === "SPORT") {
+          newDrawings.push({
+            ...drawing,
+            x: position(newCategories.indexOf("SPORT"), "x"),
+            y: position(newCategories.indexOf("SPORT"), "y"),
+          });
+        }
+        if (drawing.category === "HOBBY") {
+          newDrawings.push({
+            ...drawing,
+            x: position(newCategories.indexOf("HOBBY"), "x"),
+            y: position(newCategories.indexOf("HOBBY"), "y"),
+          });
+        }
+        if (drawing.category === "GAME") {
+          newDrawings.push({
+            ...drawing,
+            x: position(newCategories.indexOf("GAME"), "x"),
+            y: position(newCategories.indexOf("GAME"), "y"),
+          });
+        }
       });
       return newDrawings;
     });
-  }, [setDrawings]);
+  }, [categories, newCategories, setDrawings]);
 
-  const position = (category: Category, Coordinate: "x" | "y"): number => {
+  const position = (index: number, Coordinate: "x" | "y"): number => {
     if (Coordinate === "x") {
-      if (category === "INTRO") {
-        return 400;
+      if (index === 0) {
+        return 250;
       }
-      if (category === "FOOD") {
-        return Math.random() * 250;
+      if (index === 1 || index === 3) {
+        return Math.random() * 150;
       }
-      if (category === "SPORT") {
-        return Math.random() * 250 + 500;
-      }
-      if (category === "HOBBY") {
-        return Math.random() * 250;
-      }
-      if (category === "GAME") {
+      if (index === 2 || index === 4) {
         return Math.random() * 250 + 500;
       }
     }
     if (Coordinate === "y") {
-      if (category === "INTRO") {
-        return 450;
+      if (index === 0) {
+        return 300;
       }
-      if (category === "FOOD") {
-        return Math.random() * 300;
+      if (index === 1 || index === 2) {
+        return Math.random() * 150;
       }
-      if (category === "SPORT") {
-        return Math.random() * 300;
+      if (index === 3 || index === 4) {
+        return Math.random() * 250 + 450;
       }
-      if (category === "HOBBY") {
-        return Math.random() * 300 + 580;
+    }
+    return 0;
+  };
+
+  const subjectPosition = (index: number, Coordinate: "x" | "y"): number => {
+    if (Coordinate === "x") {
+      if (index === 0) {
+        return 420;
       }
-      if (category === "GAME") {
-        return Math.random() * 300 + 580;
+      if (index === 1 || index === 3) {
+        return 200;
+      }
+      if (index === 2 || index === 4) {
+        return 650;
+      }
+    }
+    if (Coordinate === "y") {
+      if (index === 0) {
+        return 250;
+      }
+      if (index === 1 || index === 2) {
+        return 10;
+      }
+      if (index === 3 || index === 4) {
+        return 500;
       }
     }
     return 0;
@@ -93,21 +149,35 @@ const ResultPage = () => {
             onTouchStart={checkDeselect}
           >
             <Layer>
-              {drawings.map((drawing, idx) => (
-                <GroupDraw
-                  drawing={drawing}
-                  width={drawing.width}
-                  height={drawing.height}
-                  x={drawing.x}
-                  y={drawing.y}
-                  scaleX={0.3}
-                  scaleY={0.3}
-                  isSelected={idx.toString() === selectedId}
-                  onSelect={() => {
-                    console.log("selected ", idx.toString());
-                    selectShape(idx.toString());
-                  }}
-                />
+              {newCategories.map((category) => (
+                <div>
+                  <Text
+                    x={subjectPosition(newCategories.indexOf(category), "x")}
+                    y={subjectPosition(newCategories.indexOf(category), "y")}
+                    text={category}
+                  />
+
+                  {drawings.map((drawing, idx) => (
+                    <div>
+                      {drawing.category === category ? (
+                        <GroupDraw
+                          drawing={drawing}
+                          width={drawing.width}
+                          height={drawing.height}
+                          x={drawing.x}
+                          y={drawing.y}
+                          scaleX={0.25}
+                          scaleY={0.25}
+                          isSelected={idx.toString() === selectedId}
+                          onSelect={() => {
+                            console.log("selected ", idx.toString());
+                            selectShape(idx.toString());
+                          }}
+                        />
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
               ))}
             </Layer>
           </Stage>

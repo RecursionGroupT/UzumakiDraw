@@ -5257,6 +5257,11 @@
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
 
+"fsevents@^2.3.2", "fsevents@~2.3.2":
+  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  "version" "2.3.2"
+
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -8983,11 +8988,6 @@
   dependencies:
     "ansi-styles" "^6.0.0"
     "is-fullwidth-code-point" "^4.0.0"
-
-"slider-color-picker@^0.2.3":
-  "integrity" "sha512-zSfItRrKJS6/w3cbBRoTtkJroRQQHoLpn/QkSYWSgzzZGt8lkcTBhPQ9erza3FLHxvYpRTMmBZyzfZdMelDHHw=="
-  "resolved" "https://registry.npmjs.org/slider-color-picker/-/slider-color-picker-0.2.3.tgz"
-  "version" "0.2.3"
 
 "sockjs@^0.3.24":
   "integrity" "sha512-GJgLTZ7vYb/JtPSSZ10hsOYIvEYsjbNU+zPdIHcUaWVNUEPivzxku31865sSSud0Da0W4lEeOPlmw93zLQchuQ=="
