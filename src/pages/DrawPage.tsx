@@ -1,7 +1,7 @@
 import React, { useState, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { useTimer } from "use-timer/lib/useTimer";
 import useSound from "use-sound";
-import { useTimer } from "use-timer";
 import SoundNext from "../sounds/playNext.mp3";
 import ToolBox from "../components/ToolBox/ToolBox";
 import KonvaCanvas from "../components/KonvaCanvas";

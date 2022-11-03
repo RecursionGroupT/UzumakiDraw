@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import Konva from "konva";
-import { Layer, Stage } from "react-konva";
+import { Layer, Rect, Stage } from "react-konva";
 import ToolBox from "../components/ToolBox/ToolBox";
 import GroupDraw from "../components/GroupeDraw";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
@@ -93,6 +93,7 @@ const ResultPage = () => {
             onTouchStart={checkDeselect}
           >
             <Layer>
+              <Rect height={800} width={900} fill="white" />
               {drawings.map((drawing, idx) => (
                 <GroupDraw
                   drawing={drawing}
