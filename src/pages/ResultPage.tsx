@@ -1,15 +1,30 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Konva from "konva";
-import { Layer, Stage } from "react-konva";
+import { Layer, Rect, Stage } from "react-konva";
 import ToolBox from "../components/ToolBox/ToolBox";
 import GroupDraw from "../components/GroupeDraw";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
-import type { Category } from "../util/Subjects";
+import { Category } from "../util/Subjects";
+import CategoryText from "../components/ResultPage/CategoryText";
+
+interface ICategory {
+  category: Category;
+  rotationDeg: number;
+  scale: number;
+}
+
+let categories: ICategory[] = [
+  { category: "FOOD", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
+  { category: "HOBBY", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
+  { category: "SPORT", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
+  { category: "GAME", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
+];
+categories = categories.sort(() => Math.random() - 0.5);
+categories.unshift({ category: "INTRO", rotationDeg: 0, scale: Math.random() * 0.5 + 1 });
 
 const ResultPage = () => {
   const { drawings, setDrawings } = useContext(KonvaContext);
-  const [selectedId, selectShape] = React.useState<string>("");
-
+  const [selectedId, selectShape] = useState<string | null>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
   const downloadURI = (uri: string, name: string) => {
@@ -25,55 +40,62 @@ const ResultPage = () => {
     setDrawings((prevDrawings) => {
       const newDrawings: Drawing[] = [];
       prevDrawings.forEach((drawing) => {
-        newDrawings.push({ ...drawing, x: position(drawing.category, "x"), y: position(drawing.category, "y") });
+        const drawingPos = getDrawingPosition(
+          categories.findIndex((category) => category.category === drawing.category)
+        );
+        newDrawings.push({
+          ...drawing,
+          x: drawingPos.x,
+          y: drawingPos.y,
+          rotationDeg: {
+            drawing: Math.random() * 30 - 15,
+            category: Math.random() * 30 - 15,
+          },
+        });
       });
       return newDrawings;
     });
   }, [setDrawings]);
 
-  const position = (category: Category, Coordinate: "x" | "y"): number => {
-    if (Coordinate === "x") {
-      if (category === "INTRO") {
-        return 400;
-      }
-      if (category === "FOOD") {
-        return Math.random() * 250;
-      }
-      if (category === "SPORT") {
-        return Math.random() * 250 + 500;
-      }
-      if (category === "HOBBY") {
-        return Math.random() * 250;
-      }
-      if (category === "GAME") {
-        return Math.random() * 250 + 500;
-      }
+  const getDrawingPosition = (index: number) => {
+    switch (index) {
+      case 0:
+        return { x: 250, y: 300 };
+      case 1:
+        return { x: Math.random() * 150, y: Math.random() * 150 };
+      case 2:
+        return { x: Math.random() * 250 + 500, y: Math.random() * 150 };
+      case 3:
+        return { x: Math.random() * 150, y: Math.random() * 250 + 450 };
+      case 4:
+        return { x: Math.random() * 250 + 500, y: Math.random() * 250 + 450 };
+      default:
+        return { x: 0, y: 0 };
     }
-    if (Coordinate === "y") {
-      if (category === "INTRO") {
-        return 450;
-      }
-      if (category === "FOOD") {
-        return Math.random() * 300;
-      }
-      if (category === "SPORT") {
-        return Math.random() * 300;
-      }
-      if (category === "HOBBY") {
-        return Math.random() * 300 + 580;
-      }
-      if (category === "GAME") {
-        return Math.random() * 300 + 580;
-      }
+  };
+
+  const getSubjectPosition = (index: number) => {
+    switch (index) {
+      case 0:
+        return { x: 420, y: 250 };
+      case 1:
+        return { x: 200, y: 10 };
+      case 2:
+        return { x: 650, y: 10 };
+      case 3:
+        return { x: 200, y: 500 };
+      case 4:
+        return { x: 650, y: 500 };
+      default:
+        return { x: 0, y: 0 };
     }
-    return 0;
   };
 
   const checkDeselect = (e: Konva.KonvaEventObject<Event>) => {
     // deselect when clicked on empty area
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
-      selectShape("");
+      selectShape(null);
     }
   };
 
@@ -93,21 +115,38 @@ const ResultPage = () => {
             onTouchStart={checkDeselect}
           >
             <Layer>
-              {drawings.map((drawing, idx) => (
-                <GroupDraw
-                  drawing={drawing}
-                  width={drawing.width}
-                  height={drawing.height}
-                  x={drawing.x}
-                  y={drawing.y}
-                  scaleX={0.3}
-                  scaleY={0.3}
-                  isSelected={idx.toString() === selectedId}
-                  onSelect={() => {
-                    console.log("selected ", idx.toString());
-                    selectShape(idx.toString());
-                  }}
-                />
+              <Rect height={800} width={900} fill="white" />
+              {categories.map((category, categoryIdx) => (
+                <>
+                  <CategoryText
+                    pos={getSubjectPosition(categoryIdx)}
+                    category={category.category}
+                    rotationDeg={category.rotationDeg}
+                    scale={category.scale}
+                    isSelected={category.category === selectedId}
+                    onSelect={() => {
+                      selectShape(category.category);
+                    }}
+                  />
+                  {drawings
+                    .filter((drawing) => drawing.category === category.category)
+                    .map((drawing) => (
+                      <GroupDraw
+                        drawing={drawing}
+                        width={drawing.width}
+                        height={drawing.height}
+                        x={drawing.x}
+                        y={drawing.y}
+                        rotationDeg={drawing.rotationDeg.drawing}
+                        scaleX={0.35}
+                        scaleY={0.35}
+                        isSelected={drawing.id === selectedId}
+                        onSelect={() => {
+                          selectShape(drawing.id);
+                        }}
+                      />
+                    ))}
+                </>
               ))}
             </Layer>
           </Stage>
@@ -117,6 +156,7 @@ const ResultPage = () => {
             type="button"
             onClick={() => {
               if (stageRef.current) {
+                selectShape(null);
                 const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
                 downloadURI(dataURL, "stage.png");
               }

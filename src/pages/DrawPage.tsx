@@ -2,6 +2,7 @@ import React, { useState, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import useSound from "use-sound";
 import { useTimer } from "use-timer";
+import { nanoid } from "nanoid";
 import SoundNext from "../sounds/playNext.mp3";
 import ToolBox from "../components/ToolBox/ToolBox";
 import KonvaCanvas from "../components/KonvaCanvas";
@@ -12,7 +13,16 @@ import type { Subject } from "../util/Subjects";
 import { subjects } from "../util/Subjects";
 
 const DrawPage = () => {
-  const [drawing, setDrawing] = useState<Drawing>({ lines: [], category: null, width: 0, height: 0, x: 0, y: 0 });
+  const [drawing, setDrawing] = useState<Drawing>({
+    lines: [],
+    category: null,
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    id: nanoid(),
+    rotationDeg: { drawing: 0, category: 0 },
+  });
   const [subjectArray, setSubjectArray] = useState<Subject[]>(subjects);
   const [subject, setSubject] = useState<Subject>(subjects[0]);
   const [playNext] = useSound<string>(SoundNext as string);
@@ -57,10 +67,20 @@ const DrawPage = () => {
           category: subject.category,
           width: drawPageStageDimensions.width,
           height: drawPageStageDimensions.height,
+          id: nanoid(),
         },
       ]); // save current canvas
     }
-    setDrawing({ lines: [], category: null, width: 0, height: 0, x: 0, y: 0 }); // clear current canvas
+    setDrawing({
+      lines: [],
+      category: null,
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+      id: nanoid(),
+      rotationDeg: { drawing: 0, category: 0 },
+    }); // clear current canvas
   }, [
     playNext,
     subjectChange,
@@ -74,12 +94,12 @@ const DrawPage = () => {
   ]);
 
   return (
-    <div className="relative mx-5 flex h-5/6 min-w-[1100px] flex-col space-y-4">
-      <div className="flex h-full space-x-8 p-4">
+    <div className="relative mx-5 my-10 flex h-full min-w-[1100px] flex-col space-y-4">
+      <div className="flex h-full w-full items-center justify-between">
         <div className="basis-1/6 content-center">
           <ToolBox />
         </div>
-        <div className="mt-1 basis-4/6">
+        <div className="mt-1">
           <SubjectDisplay subject={subject.title} />
           <Timer seconds={time} initialTime={initialTime} />
           <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />

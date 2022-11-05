@@ -15,10 +15,22 @@ interface Props {
   scaleY: number;
   isSelected: boolean;
   onSelect: () => void;
+  rotationDeg: number;
   // onChange: () => void;
 }
 
-const GroupDraw: React.FC<Props> = ({ drawing, x, y, width, height, scaleX, scaleY, isSelected, onSelect }) => {
+const GroupDraw: React.FC<Props> = ({
+  drawing,
+  x,
+  y,
+  width,
+  height,
+  scaleX,
+  scaleY,
+  isSelected,
+  onSelect,
+  rotationDeg,
+}) => {
   const trRef = useRef<Konva.Transformer>(null);
   const grpRef = useRef<Konva.Group>(null);
 
@@ -40,7 +52,16 @@ const GroupDraw: React.FC<Props> = ({ drawing, x, y, width, height, scaleX, scal
 
   return (
     <>
-      <Group onClick={() => onSelect()} ref={grpRef} x={x} y={y} scaleX={scaleX} scaleY={scaleY} draggable>
+      <Group
+        onClick={() => onSelect()}
+        rotationDeg={rotationDeg}
+        ref={grpRef}
+        x={x}
+        y={y}
+        scaleX={scaleX}
+        scaleY={scaleY}
+        draggable
+      >
         <Rect width={width} height={height} id="invisible-rect" />
         {drawing.lines.map((line) => (
           <Line

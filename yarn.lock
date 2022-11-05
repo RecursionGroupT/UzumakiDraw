@@ -7035,6 +7035,11 @@
   "resolved" "https://registry.npmjs.org/nanoid/-/nanoid-3.3.4.tgz"
   "version" "3.3.4"
 
+"nanoid@^4.0.0":
+  "integrity" "sha512-IgBP8piMxe/gf73RTQx7hmnhwz0aaEXYakvqZyE302IXW3HyVNhdNGC+O2MwMAVhLEnvXlvKtGbtJf6wvHihCg=="
+  "resolved" "https://registry.npmjs.org/nanoid/-/nanoid-4.0.0.tgz"
+  "version" "4.0.0"
+
 "natural-compare@^1.4.0":
   "integrity" "sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw=="
   "resolved" "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
@@ -8983,11 +8988,6 @@
   dependencies:
     "ansi-styles" "^6.0.0"
     "is-fullwidth-code-point" "^4.0.0"
-
-"slider-color-picker@^0.2.3":
-  "integrity" "sha512-zSfItRrKJS6/w3cbBRoTtkJroRQQHoLpn/QkSYWSgzzZGt8lkcTBhPQ9erza3FLHxvYpRTMmBZyzfZdMelDHHw=="
-  "resolved" "https://registry.npmjs.org/slider-color-picker/-/slider-color-picker-0.2.3.tgz"
-  "version" "0.2.3"
 
 "sockjs@^0.3.24":
   "integrity" "sha512-GJgLTZ7vYb/JtPSSZ10hsOYIvEYsjbNU+zPdIHcUaWVNUEPivzxku31865sSSud0Da0W4lEeOPlmw93zLQchuQ=="
