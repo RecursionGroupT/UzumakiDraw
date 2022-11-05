@@ -1,5 +1,6 @@
 import { LineCap, LineJoin } from "konva/lib/Shape";
 import { createContext, useState, useMemo } from "react";
+import { defaultDrawings } from "../util/defaultDrawings";
 import { Category } from "../util/Subjects";
 
 export type PenNames = "pencil" | "eraser" | "brush";
@@ -27,6 +28,11 @@ export interface Drawing {
   height: number;
   x: number;
   y: number;
+  id: string;
+  rotationDeg: {
+    drawing: number;
+    category: number;
+  };
 }
 
 type DrawPageStageDimensions = { width: number; height: number };
@@ -72,7 +78,7 @@ export const KonvaContextProvider: React.FC<Props> = ({ children }: Props) => {
   const [eraserWidth, setEraserWidth] = useState<number>(50);
   const [penOpacity, setPenOpacity] = useState<number>(1);
   const [isTimerExpired, setIsTimerExpired] = useState<boolean>(false);
-  const [drawings, setDrawings] = useState<Drawing[]>([]);
+  const [drawings, setDrawings] = useState<Drawing[]>(defaultDrawings);
   const [drawPageStageDimensions, setDrawPageStageDimensions] = useState<DrawPageStageDimensions>({
     width: 0,
     height: 0,
