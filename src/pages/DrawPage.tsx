@@ -1,22 +1,39 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useSound from "use-sound";
 import { useTimer } from "use-timer";
+import Konva from "konva";
+import { Line } from "react-konva";
 import SoundNext from "../sounds/playNext.mp3";
 import ToolBox from "../components/ToolBox/ToolBox";
-import KonvaCanvas from "../components/KonvaCanvas";
 import SubjectDisplay from "../components/DrawPage/SubjectDisplay";
-import { Drawing, KonvaContext } from "../context/KonvaContext";
+import { Drawing, IPenType, KonvaContext } from "../context/KonvaContext";
 import Timer from "../components/DrawPage/Timer";
 import type { Subject } from "../util/Subjects";
 import { subjects } from "../util/Subjects";
+import Canvas from "../components/Canvas";
 
 const DrawPage = () => {
+  const stageRef = useRef<Konva.Stage>(null);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
   const [drawing, setDrawing] = useState<Drawing>({ lines: [], category: null, width: 0, height: 0, x: 0, y: 0 });
   const [subjectArray, setSubjectArray] = useState<Subject[]>(subjects);
   const [subject, setSubject] = useState<Subject>(subjects[0]);
   const [playNext] = useSound<string>(SoundNext as string);
-  const { setDrawings, drawPageStageDimensions } = useContext(KonvaContext);
+  const {
+    setDrawings,
+    drawPageStageDimensions,
+    penType,
+    penColor,
+    penWidth,
+    isPenDash,
+    eraserWidth,
+    penOpacity,
+    setDrawPageStageDimensions,
+  } = useContext(KonvaContext);
+
+  const isDrawing = useRef<boolean>(false);
 
   const initialTime = 3000;
   const { start, time, reset } = useTimer({
@@ -29,6 +46,40 @@ const DrawPage = () => {
       handleNext();
     },
   });
+
+  const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>): void => {
+    isDrawing.current = true;
+    const stage = e.target.getStage();
+    if (stage != null) {
+      const pos = stage.getPointerPosition();
+      if (pos != null) {
+        const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
+        if (currPenType.name === "eraser") {
+          setDrawing((prevDrawing) => {
+            const newDrawing = { ...prevDrawing };
+            newDrawing.lines = [
+              ...prevDrawing.lines,
+              { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: eraserWidth, opacity: 1 },
+            ];
+            return newDrawing;
+          });
+        } else {
+          setDrawing((prevDrawing) => {
+            const newDrawing = { ...prevDrawing };
+            newDrawing.lines = [
+              ...prevDrawing.lines,
+              { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth, opacity: penOpacity },
+            ];
+            return newDrawing;
+          });
+        }
+      }
+    }
+  };
+
+  const handleMouseUp = (): void => {
+    isDrawing.current = false;
+  };
 
   const subjectChange = useCallback(() => {
     if (subjectArray.length > 1) {
@@ -73,6 +124,27 @@ const DrawPage = () => {
     drawPageStageDimensions.height,
   ]);
 
+  const handleResize = useCallback(() => {
+    setWidth(window.innerWidth * 0.5);
+    setHeight(window.innerHeight * 0.5);
+    setDrawPageStageDimensions({
+      width: window.innerWidth * 0.5,
+      height: window.innerHeight * 0.5,
+    });
+  }, [setDrawPageStageDimensions]);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", () => {
+      handleResize();
+    });
+    return () => {
+      window.removeEventListener("resize", () => {
+        handleResize();
+      });
+    };
+  }, [handleResize]);
+
   return (
     <div className="relative mx-5 flex h-5/6 min-w-[1100px] flex-col space-y-4">
       <div className="flex h-full space-x-8 p-4">
@@ -82,7 +154,32 @@ const DrawPage = () => {
         <div className="mt-1 basis-4/6">
           <SubjectDisplay subject={subject.title} />
           <Timer seconds={time} initialTime={initialTime} />
-          <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
+          <Canvas
+            ref={stageRef}
+            drawing={drawing}
+            setDrawing={setDrawing}
+            className="rounded-b-lg border-4 border-black bg-white"
+            width={width}
+            height={height}
+            isDrawing={isDrawing}
+            handleMouseUp={handleMouseUp}
+            handleMouseDown={handleMouseDown}
+          >
+            {drawing.lines.map((line) => (
+              <Line
+                points={line.points}
+                stroke={line.color}
+                strokeWidth={line.width}
+                opacity={line.opacity}
+                tension={0.4}
+                dash={[line.width, line.width * 2]}
+                dashEnabled={line.penType.dashEnabled}
+                lineCap={line.penType.lineCap}
+                lineJoin={line.penType.lineJoin}
+                globalCompositeOperation={line.penType.globalCompositeOperation}
+              />
+            ))}
+          </Canvas>
         </div>
         <div className="basis-1/6">
           <button

@@ -1,16 +1,58 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Konva from "konva";
-import { Layer, Stage } from "react-konva";
+import { Line } from "react-konva";
 import ToolBox from "../components/ToolBox/ToolBox";
 import GroupDraw from "../components/GroupeDraw";
-import { Drawing, KonvaContext } from "../context/KonvaContext";
+import { Drawing, IPenType, KonvaContext } from "../context/KonvaContext";
 import type { Category } from "../util/Subjects";
+import Canvas from "../components/Canvas";
 
 const ResultPage = () => {
-  const { drawings, setDrawings } = useContext(KonvaContext);
-  const [selectedId, selectShape] = React.useState<string>("");
-
   const stageRef = useRef<Konva.Stage>(null);
+  const { drawings, setDrawings, penType, penColor, penWidth, isPenDash, eraserWidth, penOpacity } =
+    useContext(KonvaContext);
+  const [drawing, setDrawing] = useState<Drawing>({ lines: [], category: null, width: 0, height: 0, x: 0, y: 0 });
+  const [selectedId, selectShape] = React.useState<string>("");
+  const isDrawing = useRef<boolean>(false);
+
+  const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>): void => {
+    const clickedOnEmpty = e.target === e.target.getStage() || e.target.name() === "cursor";
+    if (clickedOnEmpty) {
+      selectShape("");
+    }
+
+    const stage = e.target.getStage();
+    if (stage != null) {
+      const pos = stage.getPointerPosition();
+      if (pos != null && clickedOnEmpty) {
+        isDrawing.current = true;
+        const currPenType: IPenType = { ...penType, dashEnabled: isPenDash };
+        if (currPenType.name === "eraser") {
+          setDrawing((prevDrawing) => {
+            const newDrawing = { ...prevDrawing };
+            newDrawing.lines = [
+              ...prevDrawing.lines,
+              { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: eraserWidth, opacity: 1 },
+            ];
+            return newDrawing;
+          });
+        } else {
+          setDrawing((prevDrawing) => {
+            const newDrawing = { ...prevDrawing };
+            newDrawing.lines = [
+              ...prevDrawing.lines,
+              { penType: currPenType, points: [pos.x, pos.y], color: penColor, width: penWidth, opacity: penOpacity },
+            ];
+            return newDrawing;
+          });
+        }
+      }
+    }
+  };
+
+  const handleMouseUp = (): void => {
+    isDrawing.current = false;
+  };
 
   const downloadURI = (uri: string, name: string) => {
     const link = document.createElement("a");
@@ -24,8 +66,12 @@ const ResultPage = () => {
   useEffect(() => {
     setDrawings((prevDrawings) => {
       const newDrawings: Drawing[] = [];
-      prevDrawings.forEach((drawing) => {
-        newDrawings.push({ ...drawing, x: position(drawing.category, "x"), y: position(drawing.category, "y") });
+      prevDrawings.forEach((currDrawing) => {
+        newDrawings.push({
+          ...currDrawing,
+          x: position(currDrawing.category, "x"),
+          y: position(currDrawing.category, "y"),
+        });
       });
       return newDrawings;
     });
@@ -69,14 +115,6 @@ const ResultPage = () => {
     return 0;
   };
 
-  const checkDeselect = (e: Konva.KonvaEventObject<Event>) => {
-    // deselect when clicked on empty area
-    const clickedOnEmpty = e.target === e.target.getStage();
-    if (clickedOnEmpty) {
-      selectShape("");
-    }
-  };
-
   return (
     <div className="relative mx-10 flex h-5/6 min-w-[1100px] flex-col space-y-4 p-2">
       <div className="flex h-full space-x-8 p-4">
@@ -84,39 +122,55 @@ const ResultPage = () => {
           <ToolBox />
         </div>
         <div className="mt-1 basis-4/6">
-          <Stage
+          <Canvas
             ref={stageRef}
+            drawing={drawing}
+            setDrawing={setDrawing}
             className="m-auto w-[908px] rounded-md border-4 bg-white"
             height={800}
             width={900}
-            onMouseDown={checkDeselect}
-            onTouchStart={checkDeselect}
+            isDrawing={isDrawing}
+            handleMouseUp={handleMouseUp}
+            handleMouseDown={handleMouseDown}
           >
-            <Layer>
-              {drawings.map((drawing, idx) => (
-                <GroupDraw
-                  drawing={drawing}
-                  width={drawing.width}
-                  height={drawing.height}
-                  x={drawing.x}
-                  y={drawing.y}
-                  scaleX={0.3}
-                  scaleY={0.3}
-                  isSelected={idx.toString() === selectedId}
-                  onSelect={() => {
-                    console.log("selected ", idx.toString());
-                    selectShape(idx.toString());
-                  }}
-                />
-              ))}
-            </Layer>
-          </Stage>
+            {drawing.lines.map((line) => (
+              <Line
+                points={line.points}
+                stroke={line.color}
+                strokeWidth={line.width}
+                opacity={line.opacity}
+                tension={0.4}
+                dash={[line.width, line.width * 2]}
+                dashEnabled={line.penType.dashEnabled}
+                lineCap={line.penType.lineCap}
+                lineJoin={line.penType.lineJoin}
+                globalCompositeOperation={line.penType.globalCompositeOperation}
+              />
+            ))}
+            {drawings.map((prevDrawing, idx) => (
+              <GroupDraw
+                drawing={prevDrawing}
+                width={prevDrawing.width}
+                height={prevDrawing.height}
+                x={prevDrawing.x}
+                y={prevDrawing.y}
+                scaleX={0.3}
+                scaleY={0.3}
+                isSelected={idx.toString() === selectedId}
+                onSelect={() => {
+                  selectShape(idx.toString());
+                }}
+              />
+            ))}
+          </Canvas>
         </div>
         <div className="basis-1/6">
           <button
             type="button"
             onClick={() => {
+              console.log(stageRef.current);
               if (stageRef.current) {
+                console.log("download");
                 const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
                 downloadURI(dataURL, "stage.png");
               }
