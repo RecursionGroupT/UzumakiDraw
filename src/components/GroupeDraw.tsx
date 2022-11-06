@@ -54,7 +54,7 @@ const GroupDraw: React.FC<Props> = ({
     <>
       <Group
         onClick={() => onSelect()}
-        rotationDeg={rotationDeg}
+        rotation={rotationDeg}
         ref={grpRef}
         x={x}
         y={y}

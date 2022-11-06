@@ -29,7 +29,7 @@ const CategoryText: React.FC<Props> = ({ pos, category, isSelected, onSelect, ro
       <Text
         scaleX={scale}
         scaleY={scale}
-        rotationDeg={rotationDeg}
+        rotation={rotationDeg}
         ref={textRef}
         x={pos.x}
         y={pos.y}
