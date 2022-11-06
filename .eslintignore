@@ -4,3 +4,5 @@ public/
 *.config.js
 .*lintrc.js
 /*.*
+postcss.config.js
+tailwind.config.js

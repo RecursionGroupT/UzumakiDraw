@@ -1,0 +1,7 @@
+{
+  "editor.quickSuggestions": { "strings": true },
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
