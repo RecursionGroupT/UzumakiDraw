@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import useSound from "use-sound";
 import { useTimer } from "use-timer";
 import { nanoid } from "nanoid";
+import { FaArrowRight } from "react-icons/fa";
+import { motion } from "framer-motion";
 import SoundNext from "../sounds/playNext.mp3";
 import ToolBox from "../components/ToolBox/ToolBox";
 import KonvaCanvas from "../components/KonvaCanvas";
@@ -94,34 +96,40 @@ const DrawPage = () => {
   ]);
 
   return (
-    <div className="relative mx-5 my-10 flex h-full min-w-[1100px] flex-col space-y-4">
-      <div className="flex h-full w-full items-center justify-between">
-        <div className="basis-1/6 content-center">
-          <ToolBox />
+    <div className="mx-16 flex w-full items-center space-x-8 rounded-2xl border-4 border-double border-orange-300 px-4 py-12">
+      <div className="basis-1/4">
+        <ToolBox />
+      </div>
+      <div className="basis-1/2 shadow-xl">
+        <SubjectDisplay subject={subject.title} />
+        <Timer seconds={time} initialTime={initialTime} />
+        <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
+      </div>
+      <div className="grid basis-1/4 justify-items-center">
+        <div>
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              transition: { duration: 0.3 },
+            }}
+            whileTap={{ scale: 0.9 }}
+            type="button"
+            className="rounded-lg bg-orange-300 py-6 px-12 text-2xl shadow-md shadow-gray-400 hover:bg-orange-400 "
+            onClick={handleNext}
+          >
+            <FaArrowRight />
+          </motion.button>
         </div>
-        <div className="mt-1">
-          <SubjectDisplay subject={subject.title} />
-          <Timer seconds={time} initialTime={initialTime} />
-          <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
-        </div>
-        <div className="basis-1/6">
+
+        <Link to="/result">
           <button
-            className="rounded border-2 border-gray-900 bg-orange-400 px-4 py-2 font-semibold tracking-tighter transition duration-300 hover:bg-gray-900 hover:text-white md:mb-0 "
+            className="m-4 rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600"
             type="button"
             onClick={handleNext}
           >
-            NEXT
+            RESULT
           </button>
-          <Link to="/result">
-            <button
-              className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600"
-              type="button"
-              onClick={handleNext}
-            >
-              RESULT
-            </button>
-          </Link>
-        </div>
+        </Link>
       </div>
     </div>
   );

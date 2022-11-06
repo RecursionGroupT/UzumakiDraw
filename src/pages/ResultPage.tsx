@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Konva from "konva";
 import { Layer, Rect, Stage } from "react-konva";
-import ToolBox from "../components/ToolBox/ToolBox";
+// import ToolBox from "../components/ToolBox/ToolBox";
+import { MdOutlineSaveAlt } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { AiFillHome } from "react-icons/ai";
 import GroupDraw from "../components/GroupeDraw";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
 import { Category } from "../util/Subjects";
@@ -62,13 +65,13 @@ const ResultPage = () => {
       case 0:
         return { x: 250, y: 300 };
       case 1:
-        return { x: Math.random() * 150, y: Math.random() * 150 };
+        return { x: Math.random() * 150, y: Math.random() * 120 };
       case 2:
-        return { x: Math.random() * 250 + 500, y: Math.random() * 150 };
+        return { x: Math.random() * 250 + 400, y: Math.random() * 150 };
       case 3:
-        return { x: Math.random() * 150, y: Math.random() * 250 + 450 };
+        return { x: Math.random() * 150, y: Math.random() * 200 + 400 };
       case 4:
-        return { x: Math.random() * 250 + 500, y: Math.random() * 250 + 450 };
+        return { x: Math.random() * 200 + 400, y: Math.random() * 200 + 400 };
       default:
         return { x: 0, y: 0 };
     }
@@ -77,15 +80,15 @@ const ResultPage = () => {
   const getSubjectPosition = (index: number) => {
     switch (index) {
       case 0:
-        return { x: 420, y: 250 };
+        return { x: 380, y: 250 };
       case 1:
-        return { x: 200, y: 10 };
+        return { x: 120, y: 20 };
       case 2:
-        return { x: 650, y: 10 };
+        return { x: 600, y: 20 };
       case 3:
-        return { x: 200, y: 500 };
+        return { x: 120, y: 450 };
       case 4:
-        return { x: 650, y: 500 };
+        return { x: 600, y: 450 };
       default:
         return { x: 0, y: 0 };
     }
@@ -100,71 +103,88 @@ const ResultPage = () => {
   };
 
   return (
-    <div className="relative mx-10 flex h-5/6 min-w-[1100px] flex-col space-y-4 p-2">
-      <div className="flex h-full space-x-8 p-4">
-        <div className="grid basis-1/6 content-center">
+    <div className="relative flex w-full justify-center">
+      {/* <div className="grid basis-1/6 content-center">
           <ToolBox />
-        </div>
-        <div className="mt-1 basis-4/6">
-          <Stage
-            ref={stageRef}
-            className="m-auto w-[908px] rounded-md border-4 bg-white"
-            height={800}
-            width={900}
-            onMouseDown={checkDeselect}
-            onTouchStart={checkDeselect}
-          >
-            <Layer>
-              <Rect height={800} width={900} fill="white" />
-              {categories.map((category, categoryIdx) => (
-                <>
-                  <CategoryText
-                    pos={getSubjectPosition(categoryIdx)}
-                    category={category.category}
-                    rotationDeg={category.rotationDeg}
-                    scale={category.scale}
-                    isSelected={category.category === selectedId}
+        </div> */}
+
+      <Stage
+        ref={stageRef}
+        className="w-[858px] rounded-md border-4 border-double bg-white shadow-md shadow-black"
+        height={750}
+        width={850}
+        onMouseDown={checkDeselect}
+        onTouchStart={checkDeselect}
+      >
+        <Layer>
+          <Rect height={750} width={850} fill="white" />
+          {categories.map((category, categoryIdx) => (
+            <>
+              <CategoryText
+                pos={getSubjectPosition(categoryIdx)}
+                category={category.category}
+                rotationDeg={category.rotationDeg}
+                scale={category.scale}
+                isSelected={category.category === selectedId}
+                onSelect={() => {
+                  selectShape(category.category);
+                }}
+              />
+              {drawings
+                .filter((drawing) => drawing.category === category.category)
+                .map((drawing) => (
+                  <GroupDraw
+                    drawing={drawing}
+                    width={drawing.width}
+                    height={drawing.height}
+                    x={drawing.x}
+                    y={drawing.y}
+                    rotationDeg={drawing.rotationDeg.drawing}
+                    scaleX={0.35}
+                    scaleY={0.35}
+                    isSelected={drawing.id === selectedId}
                     onSelect={() => {
-                      selectShape(category.category);
+                      selectShape(drawing.id);
                     }}
                   />
-                  {drawings
-                    .filter((drawing) => drawing.category === category.category)
-                    .map((drawing) => (
-                      <GroupDraw
-                        drawing={drawing}
-                        width={drawing.width}
-                        height={drawing.height}
-                        x={drawing.x}
-                        y={drawing.y}
-                        rotationDeg={drawing.rotationDeg.drawing}
-                        scaleX={0.35}
-                        scaleY={0.35}
-                        isSelected={drawing.id === selectedId}
-                        onSelect={() => {
-                          selectShape(drawing.id);
-                        }}
-                      />
-                    ))}
-                </>
-              ))}
-            </Layer>
-          </Stage>
+                ))}
+            </>
+          ))}
+        </Layer>
+      </Stage>
+
+      <div className="absolute right-0 mx-12 rounded-2xl border-l-2 bg-white shadow-md">
+        <div className="noselect rounded-t-lg  p-6 text-center text-xl font-bold">
+          <p>編集して完成を保存しよう</p>
         </div>
-        <div className="basis-1/6">
-          <button
-            type="button"
-            onClick={() => {
-              if (stageRef.current) {
-                selectShape(null);
-                const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
-                downloadURI(dataURL, "stage.png");
-              }
-            }}
-          >
-            save as image
-          </button>
-        </div>
+        <button
+          type="button"
+          className="grid w-full justify-items-center rounded-lg p-4 text-gray-500 transition duration-300 hover:bg-gray-100 hover:text-gray-900"
+          onClick={() => {
+            if (stageRef.current) {
+              selectShape(null);
+              const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
+              downloadURI(dataURL, "stage.png");
+            }
+          }}
+        >
+          <div className="flex space-x-4 ">
+            <p className="text-4xl">
+              <MdOutlineSaveAlt />
+            </p>
+            <p className="text-center text-lg leading-10 tracking-widest">保存</p>
+          </div>
+        </button>
+        <Link to="/home">
+          <div className=" grid w-full justify-items-center rounded-lg p-4 text-gray-500 transition duration-300 hover:bg-gray-100 hover:text-gray-900">
+            <div className="flex space-x-4 ">
+              <p className="text-4xl">
+                <AiFillHome />
+              </p>
+              <p className="text-center text-lg leading-10 tracking-widest ">ホーム</p>
+            </div>
+          </div>
+        </Link>
       </div>
     </div>
   );
