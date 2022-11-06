@@ -1,7 +1,7 @@
 import Konva from "konva";
 import React, { useEffect, useRef } from "react";
 import { Text, Transformer } from "react-konva";
-import { Category } from "../../util/Subjects";
+import { Category } from "../../util/subject";
 
 type Props = {
   pos: { x: number; y: number };

@@ -1,16 +1,17 @@
 import React, { useState, useContext, useCallback } from "react";
-import { Link } from "react-router-dom";
 import useSound from "use-sound";
 import { useTimer } from "use-timer";
 import { nanoid } from "nanoid";
+import { FaArrowRight } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import SoundNext from "../sounds/playNext.mp3";
 import ToolBox from "../components/ToolBox/ToolBox";
 import KonvaCanvas from "../components/KonvaCanvas";
 import SubjectDisplay from "../components/DrawPage/SubjectDisplay";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
 import Timer from "../components/DrawPage/Timer";
-import type { Subject } from "../util/Subjects";
-import { subjects } from "../util/Subjects";
+import { subjects, Subject } from "../util/subject";
 
 const DrawPage = () => {
   const [drawing, setDrawing] = useState<Drawing>({
@@ -25,8 +26,10 @@ const DrawPage = () => {
   });
   const [subjectArray, setSubjectArray] = useState<Subject[]>(subjects);
   const [subject, setSubject] = useState<Subject>(subjects[0]);
-  const [playNext] = useSound<string>(SoundNext as string);
+  const [subjectIdx, setSubjectIdx] = useState(0);
+  const [playNext] = useSound(SoundNext as string, { volume: 0.3 });
   const { setDrawings, drawPageStageDimensions } = useContext(KonvaContext);
+  const navigate = useNavigate();
 
   const initialTime = 3000;
   const { start, time, reset } = useTimer({
@@ -56,6 +59,7 @@ const DrawPage = () => {
 
   const handleNext = useCallback(() => {
     playNext();
+    setSubjectIdx((prevState) => prevState + 1);
     subjectChange(); // change subject title
     reset(); // reset timer
     start(); // start timer
@@ -81,12 +85,18 @@ const DrawPage = () => {
       id: nanoid(),
       rotationDeg: { drawing: 0, category: 0 },
     }); // clear current canvas
+
+    if (subjectIdx >= subjects.length - 1) {
+      navigate("/result");
+    }
   }, [
     playNext,
+    subjectIdx,
     subjectChange,
     reset,
     start,
     drawing,
+    navigate,
     setDrawings,
     subject.category,
     drawPageStageDimensions.width,
@@ -94,33 +104,31 @@ const DrawPage = () => {
   ]);
 
   return (
-    <div className="relative mx-5 my-10 flex h-full min-w-[1100px] flex-col space-y-4">
-      <div className="flex h-full w-full items-center justify-between">
-        <div className="basis-1/6 content-center">
-          <ToolBox />
-        </div>
-        <div className="mt-1">
-          <SubjectDisplay subject={subject.title} />
-          <Timer seconds={time} initialTime={initialTime} />
-          <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
-        </div>
-        <div className="basis-1/6">
-          <button
-            className="rounded border-2 border-gray-900 bg-orange-400 px-4 py-2 font-semibold tracking-tighter transition duration-300 hover:bg-gray-900 hover:text-white md:mb-0 "
+    <div className="m-12 flex items-center space-x-8 rounded-2xl border-4 border-double border-orange-300 px-4 py-12">
+      <div className="grid basis-1/4">
+        <ToolBox />
+      </div>
+      <div className="shadow-xl">
+        <SubjectDisplay subject={subject.title} />
+        <Timer seconds={time} initialTime={initialTime} />
+        <KonvaCanvas drawing={drawing} setDrawing={setDrawing} />
+      </div>
+      <div className="grid basis-1/4 justify-items-center">
+        <div>
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              transition: { duration: 0.3 },
+            }}
+            whileTap={{ scale: 0.9 }}
             type="button"
+            className={`rounded-lg py-6 px-12 text-2xl shadow-md shadow-gray-400 ${
+              subjectIdx < subjects.length - 1 ? "bg-orange-400" : "bg-blue-400"
+            }`}
             onClick={handleNext}
           >
-            NEXT
-          </button>
-          <Link to="/result">
-            <button
-              className="rounded bg-blue-800 px-4 py-2 text-white hover:bg-blue-600"
-              type="button"
-              onClick={handleNext}
-            >
-              RESULT
-            </button>
-          </Link>
+            {subjectIdx < subjects.length - 1 ? <FaArrowRight /> : <span className="font-bold">完成！</span>}
+          </motion.button>
         </div>
       </div>
     </div>

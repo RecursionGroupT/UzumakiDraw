@@ -104,10 +104,10 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
   };
 
   const handleResize = useCallback(() => {
-    setWidth(window.innerWidth * 0.5);
+    setWidth(window.innerWidth * 0.4);
     setHeight(window.innerHeight * 0.5);
     setDrawPageStageDimensions({
-      width: window.innerWidth * 0.5,
+      width: window.innerWidth * 0.4,
       height: window.innerHeight * 0.5,
     });
   }, [setDrawPageStageDimensions]);
@@ -125,42 +125,50 @@ const KonvaCanvas: React.FC<Props> = ({ drawing, setDrawing }) => {
   }, [handleResize]);
 
   return (
-    <Stage
-      className="rounded-b-lg border-4 border-black bg-white"
-      width={width}
-      height={height}
-      onMouseDown={handleMouseDown}
-      onMousemove={handleMouseMove}
-      onMouseup={handleMouseUp}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <Layer>
-        {drawing.lines.map((line) => (
-          <Line
-            points={line.points}
-            stroke={line.color}
-            strokeWidth={line.width}
-            opacity={line.opacity}
-            tension={0.4}
-            dash={[line.width, line.width * 2]}
-            dashEnabled={line.penType.dashEnabled}
-            lineCap={line.penType.lineCap}
-            lineJoin={line.penType.lineJoin}
-            globalCompositeOperation={line.penType.globalCompositeOperation}
-          />
-        ))}
-        {cursorPos && (
-          <Circle
-            fill={penType.name === "eraser" ? "rgb(212 212 212)" : penColor}
-            opacity={0.3}
-            width={penType.name === "eraser" ? eraserWidth : penWidth}
-            x={cursorPos.x}
-            y={cursorPos.y}
-          />
-        )}
-      </Layer>
-    </Stage>
+    <div className="rounded-b-lg border-4 border-black shadow-[0_12px_0_0_rgba(0,0,0)]">
+      <div className="rounded-b-lg shadow-[0_8px_0_0_rgba(255,255,255)]">
+        <div className="rounded-b-lg shadow-[0_6px_0_0_rgba(196,196,196)]">
+          <div className="rounded-b-lg shadow-[0_4px_0_0_rgba(255,255,255)]">
+            <Stage
+              className="rounded-b-lg border-black bg-white shadow-[0_2px_0_0_rgba(196,196,196)]"
+              width={width}
+              height={height}
+              onMouseDown={handleMouseDown}
+              onMousemove={handleMouseMove}
+              onMouseup={handleMouseUp}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Layer>
+                {drawing.lines.map((line) => (
+                  <Line
+                    points={line.points}
+                    stroke={line.color}
+                    strokeWidth={line.width}
+                    opacity={line.opacity}
+                    tension={0.4}
+                    dash={[line.width, line.width * 2]}
+                    dashEnabled={line.penType.dashEnabled}
+                    lineCap={line.penType.lineCap}
+                    lineJoin={line.penType.lineJoin}
+                    globalCompositeOperation={line.penType.globalCompositeOperation}
+                  />
+                ))}
+                {cursorPos && (
+                  <Circle
+                    fill={penType.name === "eraser" ? "rgb(212 212 212)" : penColor}
+                    opacity={0.3}
+                    width={penType.name === "eraser" ? eraserWidth : penWidth}
+                    x={cursorPos.x}
+                    y={cursorPos.y}
+                  />
+                )}
+              </Layer>
+            </Stage>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

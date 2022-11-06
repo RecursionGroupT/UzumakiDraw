@@ -30,7 +30,7 @@ const useGetUserDoc = () => {
     getUserDoc().catch((err) => console.log(err));
   }, [authState.user]);
 
-  return { userDoc, isLoading };
+  return { userDoc, setUserDoc, isLoading };
 };
 
 export default useGetUserDoc;

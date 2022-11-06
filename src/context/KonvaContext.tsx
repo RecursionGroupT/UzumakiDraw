@@ -1,7 +1,7 @@
 import { LineCap, LineJoin } from "konva/lib/Shape";
 import { createContext, useState, useMemo } from "react";
 // import { defaultDrawings } from "../util/defaultDrawings";
-import { Category } from "../util/Subjects";
+import { Category } from "../util/subject";
 
 export type PenNames = "pencil" | "eraser" | "brush";
 

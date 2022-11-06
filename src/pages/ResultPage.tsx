@@ -4,10 +4,12 @@ import { Layer, Rect, Stage } from "react-konva";
 import { TiDelete } from "react-icons/ti";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import ToolBox from "../components/ToolBox/ToolBox";
+import { MdOutlineSaveAlt } from "react-icons/md";
+import { BsShareFill } from "react-icons/bs";
+import { AiFillHome } from "react-icons/ai";
 import GroupDraw from "../components/GroupeDraw";
 import { Drawing, KonvaContext } from "../context/KonvaContext";
-import { Category } from "../util/Subjects";
+import { Category } from "../util/subject";
 import CategoryText from "../components/ResultPage/CategoryText";
 import { Modal } from "../components/Modal";
 import useAddUserDoc from "../hooks/useAddUserDoc";
@@ -21,11 +23,11 @@ interface ICategory {
 let categories: ICategory[] = [
   { category: "FOOD", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
   { category: "HOBBY", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
-  { category: "SPORT", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
-  { category: "GAME", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
+  { category: "LIFESTYLE", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
+  { category: "OTHERS", rotationDeg: Math.random() * 30 - 15, scale: Math.random() * 0.5 + 1 },
 ];
 categories = categories.sort(() => Math.random() - 0.5);
-categories.unshift({ category: "INTRO", rotationDeg: 0, scale: Math.random() * 0.5 + 1 });
+categories.unshift({ category: "ME", rotationDeg: 0, scale: Math.random() * 0.5 + 1 });
 
 const list = {
   visible: {
@@ -94,13 +96,13 @@ const ResultPage = () => {
       case 0:
         return { x: 250, y: 300 };
       case 1:
-        return { x: Math.random() * 150, y: Math.random() * 150 };
+        return { x: Math.random() * 150, y: Math.random() * 150 + 20 };
       case 2:
-        return { x: Math.random() * 250 + 500, y: Math.random() * 150 };
+        return { x: Math.random() * 250 + 380, y: Math.random() * 150 + 20 };
       case 3:
-        return { x: Math.random() * 150, y: Math.random() * 250 + 450 };
+        return { x: Math.random() * 150, y: Math.random() * 220 + 420 };
       case 4:
-        return { x: Math.random() * 250 + 500, y: Math.random() * 250 + 450 };
+        return { x: Math.random() * 250 + 380, y: Math.random() * 220 + 420 };
       default:
         return { x: 0, y: 0 };
     }
@@ -109,15 +111,15 @@ const ResultPage = () => {
   const getSubjectPosition = (index: number) => {
     switch (index) {
       case 0:
-        return { x: 420, y: 250 };
+        return { x: 380, y: 250 };
       case 1:
-        return { x: 200, y: 10 };
+        return { x: 120, y: 20 };
       case 2:
-        return { x: 650, y: 10 };
+        return { x: 600, y: 20 };
       case 3:
-        return { x: 200, y: 500 };
+        return { x: 120, y: 450 };
       case 4:
-        return { x: 650, y: 500 };
+        return { x: 600, y: 450 };
       default:
         return { x: 0, y: 0 };
     }
@@ -151,86 +153,113 @@ const ResultPage = () => {
 
   return (
     <>
-      <div className="relative mx-10 flex h-5/6 min-w-[1100px] flex-col space-y-4 p-2">
-        <div className="flex h-full space-x-8 p-4">
-          <div className="grid basis-1/6 content-center">
-            <ToolBox />
+      <div className="flex w-full justify-center">
+        <div>
+          <div className="noselect rounded-t-lg bg-gray-900 p-6 text-center text-xl font-bold text-white">
+            <p>編集して完成を保存しよう</p>
           </div>
-          <div className="mt-1 basis-4/6">
-            <Stage
-              ref={stageRef}
-              className="m-auto w-[908px] rounded-md border-4 bg-white"
-              height={800}
-              width={900}
-              onMouseDown={checkDeselect}
-              onTouchStart={checkDeselect}
-            >
-              <Layer>
-                <Rect name="background" height={800} width={900} fill="white" />
-                {categories.map((category, categoryIdx) => (
-                  <>
-                    <CategoryText
-                      pos={getSubjectPosition(categoryIdx)}
-                      category={category.category}
-                      rotationDeg={category.rotationDeg}
-                      scale={category.scale}
-                      isSelected={category.category === selectedId}
-                      onSelect={() => {
-                        selectShape(category.category);
-                      }}
-                    />
-                    {drawings
-                      .filter((drawing) => drawing.category === category.category)
-                      .map((drawing) => (
-                        <GroupDraw
-                          drawing={drawing}
-                          width={drawing.width}
-                          height={drawing.height}
-                          x={drawing.x}
-                          y={drawing.y}
-                          rotationDeg={drawing.rotationDeg.drawing}
-                          scaleX={0.35}
-                          scaleY={0.35}
-                          isSelected={drawing.id === selectedId}
-                          onSelect={() => {
-                            selectShape(drawing.id);
-                          }}
-                        />
-                      ))}
-                  </>
-                ))}
-              </Layer>
-            </Stage>
-          </div>
-          <div className="basis-1/6">
-            <button
-              type="button"
-              onClick={() => {
-                if (stageRef.current) {
-                  selectShape(null);
-                  const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
-                  downloadURI(dataURL, "stage.png");
-                }
-              }}
-            >
-              save as image
-            </button>
-            <motion.button
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.1 },
-              }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => {
-                getImage();
-                setShowModal(true);
-              }}
-              type="button"
-              className="flex items-center justify-center rounded-lg border border-gray-200 bg-orange-400 p-5 shadow-md"
-            >
-              SHARE
-            </motion.button>
-          </div>
+          <Stage
+            ref={stageRef}
+            className="w-[858px] rounded-b-md border-4 border-double bg-white shadow-md shadow-black"
+            height={750}
+            width={850}
+            onMouseDown={checkDeselect}
+            onTouchStart={checkDeselect}
+          >
+            <Layer>
+              <Rect name="background" height={750} width={850} fill="white" />
+              {categories.map((category, categoryIdx) => (
+                <>
+                  <CategoryText
+                    pos={getSubjectPosition(categoryIdx)}
+                    category={category.category}
+                    rotationDeg={category.rotationDeg}
+                    scale={category.scale}
+                    isSelected={category.category === selectedId}
+                    onSelect={() => {
+                      selectShape(category.category);
+                    }}
+                  />
+                  {drawings
+                    .filter((drawing) => drawing.category === category.category)
+                    .map((drawing) => (
+                      <GroupDraw
+                        drawing={drawing}
+                        width={drawing.width}
+                        height={drawing.height}
+                        x={drawing.x}
+                        y={drawing.y}
+                        rotationDeg={drawing.rotationDeg.drawing}
+                        scaleX={0.35}
+                        scaleY={0.35}
+                        isSelected={drawing.id === selectedId}
+                        onSelect={() => {
+                          selectShape(drawing.id);
+                        }}
+                      />
+                    ))}
+                </>
+              ))}
+            </Layer>
+          </Stage>
+        </div>
+        <div className="mx-12 space-y-4">
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              transition: { duration: 0.1 },
+            }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              navigate("/home");
+            }}
+            type="button"
+            className="flex w-full items-center justify-center space-x-4 rounded-lg bg-orange-400 p-5 text-xl font-bold text-gray-800 shadow-md shadow-gray-400 hover:text-black"
+          >
+            <span className="text-4xl">
+              <AiFillHome />
+            </span>
+            <span className="text-center text-lg leading-10 tracking-widest ">HOME</span>
+          </motion.button>
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              transition: { duration: 0.1 },
+            }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              if (stageRef.current) {
+                selectShape(null);
+                const dataURL = stageRef.current.toDataURL({ pixelRatio: 3 });
+                downloadURI(dataURL, "偏愛マップ.png");
+              }
+            }}
+            type="button"
+            className="flex w-full items-center justify-center space-x-4 rounded-lg bg-orange-400 p-5 text-xl font-bold text-gray-800 shadow-md shadow-gray-400 hover:text-black"
+          >
+            <span className="text-4xl">
+              <MdOutlineSaveAlt />
+            </span>
+            <span className="text-center text-lg leading-10 tracking-widest">SAVE</span>
+          </motion.button>
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              transition: { duration: 0.1 },
+            }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              getImage();
+              setShowModal(true);
+            }}
+            type="button"
+            className="flex w-full items-center justify-center space-x-4 rounded-lg bg-blue-400 p-5 text-xl font-bold text-gray-800 shadow-md shadow-gray-400 hover:text-black"
+          >
+            <span className="text-4xl">
+              <BsShareFill />
+            </span>
+            <span className="text-center text-lg leading-10 tracking-widest">SHARE</span>
+          </motion.button>
         </div>
       </div>
       <Modal isOpen={showModal} handleClose={() => setShowModal(false)}>
