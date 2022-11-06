@@ -14,16 +14,15 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       {authState.authIsReady && (
-        <div className="relative flex min-h-screen w-screen items-center justify-center bg-orange-200">
-          <div className="absolute inset-x-0 top-0 w-full">
-            <Header />
-          </div>
+        <div className="min-h-screen w-screen bg-orange-200">
+          <Header />
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/game" element={<DrawPage />} />
-            <Route path="/result" element={<ResultPage />} />
+            <Route path="/home" element={authState.user ? <HomePage /> : <LandingPage />} />
+            <Route path="/game" element={authState.user ? <DrawPage /> : <LandingPage />} />
+            <Route path="/result" element={authState.user ? <ResultPage /> : <LandingPage />} />
           </Routes>
+          <div id="modal-portal" />
         </div>
       )}
     </BrowserRouter>

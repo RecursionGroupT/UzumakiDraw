@@ -1,7 +1,7 @@
 import Konva from "konva";
 import React, { useEffect, useRef } from "react";
 import { Text, Transformer } from "react-konva";
-import { Category } from "../../util/Subjects";
+import { Category } from "../../util/subject";
 
 type Props = {
   pos: { x: number; y: number };
@@ -29,7 +29,7 @@ const CategoryText: React.FC<Props> = ({ pos, category, isSelected, onSelect, ro
       <Text
         scaleX={scale}
         scaleY={scale}
-        rotationDeg={rotationDeg}
+        rotation={rotationDeg}
         ref={textRef}
         x={pos.x}
         y={pos.y}
